@@ -11,6 +11,7 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		./builtins/pwd.c \
 		./builtins/cd.c \
 		./builtins/export.c \
+		./builtins/export_utils.c \
 		./builtins/unset.c \
 		./builtins/env.c \
 		./builtins/exit.c \

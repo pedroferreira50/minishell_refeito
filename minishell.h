@@ -138,7 +138,10 @@ void	ft_echo(char **args, t_shell *shell);
 //env
 void	ft_env(char **envp, t_shell *shell);
 //export
-int	ft_export(char **args, t_var **vars, char ***envp);
+int ft_export(char **args, t_shell *shell);
+int print_exported_env(t_shell *shell);
+int find_env_var_index(t_shell *shell, const char *name);
+char **copy_envp_with_update(t_shell *shell, char *new_entry, int replace_index);
 //pwd
 int	ft_pwd(void);
 //unset

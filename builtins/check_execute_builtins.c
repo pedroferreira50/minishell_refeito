@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 09:46:57 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/15 13:08:39 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static int execute_builtin_command(char *command, char **args, t_shell *shell)
     }
     if (ft_strcmp(command, "export") == 0)
     {
-        shell->exit_status = ft_export(args, &shell->vars, &shell->envp);
+        shell->exit_status = ft_export(args, shell);
         return (1);
     }
     if (ft_strcmp(command, "unset") == 0)
