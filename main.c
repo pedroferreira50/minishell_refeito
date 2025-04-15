@@ -15,11 +15,11 @@ void handle_command(char *input, t_shell *shell)
 
     parsed = parse_command(input, shell);
     free(input);
-    if (!parsed.args)
+    if (parsed.args == NULL)
         return;
     expand_and_validate(parsed.args, parsed.quote_types, shell);
     free_args(parsed.args, NULL);
-    if (parsed.quote_types)
+    if (parsed.quote_types != NULL)
         free(parsed.quote_types);
 }
 
@@ -29,10 +29,13 @@ int process_input(char *input, t_shell *shell)
     {
         shell->exit_status = 130;
         g_signal = 0;
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
     }
-    if (!input || ft_strcmp(input, "exit") == 0)
+    if (input == NULL)
         return (0);
-    if (*input == '\0')
+    if (input[0] == '\0')
     {
         free(input);
         return (1);
@@ -58,18 +61,24 @@ int main(int argc, char *argv[], char *envp[])
     t_shell shell;
     char *input;
 
-    (void)argc; (void)argv;
+    (void)argc;
+    (void)argv;
     init_shell(&shell, envp);
+    rl_catch_signals = 0;
     while (1)
     {
         input = readline("minishell> ");
-        if (process_input(input, &shell) < 2)
+        if (process_input(input, &shell) == 0)
         {
-            if (!input || !ft_strcmp(input, "exit"))
-                break;
-            continue;
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            break;
         }
         handle_command(input, &shell);
+        if (g_signal != 0)
+        {
+            ft_putstr_fd("exit\n", STDOUT_FILENO);
+            break;
+        }
     }
     finalize_shell(&shell);
     return (shell.exit_status);

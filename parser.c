@@ -73,7 +73,7 @@ int validate_command(char **args, t_shell *shell)
     return (1);
 }
 
-static void build_command_data(char **args, int argc, t_command_data *data)
+static void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
 {
     ft_memset(data, 0, sizeof(t_command_data));
     data->arguments = malloc(sizeof(char **) * 2);
@@ -82,22 +82,22 @@ static void build_command_data(char **args, int argc, t_command_data *data)
     data->arguments[0] = args;
     data->arguments[1] = NULL;
     data->num_commands = 1;
-    parse_input(args, argc, data);
+    parse_input(args, argc, data, shell);
 }
 
 static void execute_and_free(t_command_data *data, t_shell *shell)
 {
-    if (data->arguments)
+    if (data->arguments != NULL)
     {
-        execute_commands(data, &shell->envp, &shell->vars);
+        execute_commands(data, shell);
         free(data->arguments);
     }
 }
 
 void expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
 {
-    char **expanded;
-    t_command_data data;
+    char			**expanded;
+    t_command_data	data;
 
     if (!tokens || !tokens[0])
     {
@@ -115,6 +115,6 @@ void expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
         free_args(expanded, NULL);
         return;
     }
-    build_command_data(expanded, count_args(expanded), &data);
+    build_command_data(expanded, count_args(expanded), &data, shell);
     execute_and_free(&data, shell);
 }

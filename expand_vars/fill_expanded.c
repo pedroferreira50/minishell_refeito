@@ -17,7 +17,7 @@ static size_t calc_var_size(const char *arg, t_indices *indices, t_shell *shell)
     return (0);
 }
 
-static size_t calc_expanded_size(const char *arg, char quote_type, t_shell *shell)
+size_t calc_expanded_size(const char *arg, char quote_type, t_shell *shell)
 {
     size_t size;
     t_indices indices;
@@ -56,7 +56,7 @@ static void fill_quotes(char *dest, const char *src, t_indices *indices, char qu
     }
 }
 
-static void fill_exit_status(char *dest, const char *src, t_indices *indices, t_shell *shell)
+static void fill_exit_status(char *dest, t_indices *indices, t_shell *shell)
 {
     size_t len;
 
@@ -99,7 +99,7 @@ void fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell)
     while (src[indices.i])
     {
         if (src[indices.i] == '$' && src[indices.i + 1] == '?')
-            fill_exit_status(dest, src, &indices, shell);
+            fill_exit_status(dest, &indices, shell);
         else if (src[indices.i] == '$' && (ft_isalpha(src[indices.i + 1]) || src[indices.i + 1] == '_'))
             fill_var_name(dest, src, &indices, shell);
         else

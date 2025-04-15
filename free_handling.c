@@ -1,5 +1,65 @@
 #include "minishell.h"
 
+static void	free_data_commands(char **commands, int num_commands)
+{
+	int	i;
+
+	if (commands)
+	{
+		i = 0;
+		while (i < num_commands)
+		{
+			if (commands[i])
+				free(commands[i]);
+			i++;
+		}
+		free(commands);
+	}
+}
+
+static void	free_data_arguments(char ***arguments, int num_commands)
+{
+	int	i;
+	int	j;
+
+	if (!arguments)
+		return ;
+	i = 0;
+	while (i < num_commands)
+	{
+		if (arguments[i])
+		{
+			j = 0;
+			while (arguments[i][j])
+			{
+				free(arguments[i][j]);
+				j++;
+			}
+			free(arguments[i]);
+		}
+		i++;
+	}
+	free(arguments);
+}
+
+void free_command_data(t_command_data *data)
+{
+    if (!data)
+        return;
+    if (data->commands)
+        free_data_commands(data->commands, data->num_commands);
+    if (data->arguments)
+        free_data_arguments(data->arguments, data->num_commands);
+    if (data->input_file)
+        free(data->input_file);
+    if (data->output_file)
+        free(data->output_file);
+    if (data->heredoc_delim)
+        free(data->heredoc_delim);
+    data->num_commands = 0;
+    data->num_pipes = 0;
+}
+
 void free_args(char **args, t_command_data *data)
 {
     int i;

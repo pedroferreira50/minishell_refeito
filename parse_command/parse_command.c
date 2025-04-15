@@ -60,7 +60,7 @@ static void parse_loop(t_parse *state, t_shell *shell, t_parse_result *result, i
     }
 }
 
-static int check_initial(const char *cmd, t_shell *shell, t_parse *state, t_parse_result *result)
+static int check_initial(const char *cmd, t_shell *shell, t_parse *state)
 {
     if (!state->args || !state->quote_types)
     {
@@ -87,7 +87,7 @@ t_parse_result parse_command(const char *cmd, t_shell *shell)
     result.args = NULL;
     result.quote_types = NULL;
     initialize_state(&state, cmd);
-    if (!check_initial(cmd, shell, &state, &result))
+    if (!check_initial(cmd, shell, &state))
         return (result);
     parse_loop(&state, shell, &result, &last_was_operator);
     if (!check_errors(&state, shell, last_was_operator))

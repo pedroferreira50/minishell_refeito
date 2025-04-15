@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-static size_t handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell)
+size_t handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell)
 {
     char *status;
     size_t len;
@@ -14,7 +14,7 @@ static size_t handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell
     return (len);
 }
 
-static char *get_var_value_helper(const char *name, t_var *vars, char **envp)
+char *get_var_value_helper(const char *name, t_var *vars, char **envp)
 {
     t_var *var;
     int k;
@@ -37,7 +37,7 @@ static char *get_var_value_helper(const char *name, t_var *vars, char **envp)
     return ("");
 }
 
-static size_t get_var_len(const char *str, size_t i, t_var *vars, char **envp)
+size_t get_var_len(const char *str, size_t i, t_var *vars, char **envp)
 {
     size_t var_len;
     char *var_name;
