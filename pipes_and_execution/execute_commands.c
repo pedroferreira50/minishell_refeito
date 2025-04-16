@@ -12,6 +12,7 @@ void execute_command(char *command, char **args, t_shell *shell)
         ft_putstr_fd(command, 2);
         ft_putstr_fd("\n", 2);
         shell->exit_status = 127;
+        g_signal = 127;
         exit(127);
     }
     execve(full_path, args, shell->envp);
@@ -79,6 +80,7 @@ static void manage_parent(pid_t pid, pid_t *pids, t_exec_state *state, t_command
         if (state->prev_pipe_read != -1)
         {
             close(state->prev_pipe_read);
+            state->prev_pipe_read = -1;
         }
         if (state->i < data->num_commands - 1)
         {
@@ -172,7 +174,7 @@ void execute_commands(t_command_data *data, t_shell *shell)
     state.heredoc_fd = -1;
     state.i = 0;
     pids = NULL;
-    if (data == NULL || data->num_commands == 0 || data->commands == NULL)
+    if (data == NULL || data->commands == NULL || data->num_commands == 0)
     {
         shell->exit_status = 2;
         return;
@@ -183,7 +185,7 @@ void execute_commands(t_command_data *data, t_shell *shell)
     while (state.i < data->num_commands)
     {
         run_pipeline(data, &state, shell, pids);
-        if (g_signal == SIGINT)
+        if (g_signal != 0)
         {
             i = 0;
             while (i < data->num_commands)
@@ -192,15 +194,19 @@ void execute_commands(t_command_data *data, t_shell *shell)
                     kill(pids[i], SIGINT);
                 i++;
             }
+            if (state.prev_pipe_read != -1)
+            {
+                close(state.prev_pipe_read);
+                state.prev_pipe_read = -1;
+            }
             break;
         }
     }
     wait_commands(pids, data, shell);
+    free_command_data(data);
     if (state.prev_pipe_read != -1)
-        close(state.prev_pipe_read);
-    if (g_signal == SIGINT)
     {
-        shell->exit_status = 130;
-        g_signal = 0;
+        close(state.prev_pipe_read);
+        state.prev_pipe_read = -1;
     }
 }

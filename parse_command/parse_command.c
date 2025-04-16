@@ -5,8 +5,8 @@ static int handle_operator(t_parse *state, int *last_was_operator, t_shell *shel
     char op;
     int is_double;
 
-	op = state->cmd[state->i];
-	is_double = (state->cmd[state->i + 1] == op && (op == '<' || op == '>'));
+    op = state->cmd[state->i];
+    is_double = (state->cmd[state->i + 1] == op && (op == '<' || op == '>'));
     if (is_double)
         state->i += 2;
     else
@@ -79,11 +79,11 @@ static int check_initial(const char *cmd, t_shell *shell, t_parse *state)
 
 t_parse_result parse_command(const char *cmd, t_shell *shell)
 {
-    t_parse			state;
-    t_parse_result	result;
-    int				last_was_operator;
+    t_parse state;
+    t_parse_result result;
+    int last_was_operator;
 
-	last_was_operator = 0;
+    last_was_operator = 0;
     result.args = NULL;
     result.quote_types = NULL;
     initialize_state(&state, cmd);

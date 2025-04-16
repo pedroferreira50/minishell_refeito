@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:05:58 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 12:15:03 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:14:04 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void ft_exit(char **args, t_shell *shell)
             ft_putstr_fd(args[1], STDERR_FILENO);
             ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
             shell->exit_status = 2;
-            g_signal = 2;
-            return;
+            finalize_shell(shell);
+            exit(2);
         }
         if (args[2])
         {
@@ -56,5 +56,6 @@ void ft_exit(char **args, t_shell *shell)
     else
         exit_code = shell->exit_status;
     shell->exit_status = exit_code;
-    g_signal = exit_code;
+    finalize_shell(shell);
+    exit(exit_code);
 }
