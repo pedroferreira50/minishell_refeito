@@ -41,10 +41,7 @@ int process_input(char *input, t_shell *shell)
     if (input == NULL)
         return (0);
     if (input[0] == '\0')
-    {
-        free(input);
         return (1);
-    }
     g_signal = 0;
     shell->exit_status = 0;
     i = 0;
@@ -91,6 +88,11 @@ int main(int argc, char *argv[], char *envp[])
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             break;
+        }
+        else if (process_input(input, &shell) == 1)// Assigning a variable, skip command execution
+        {
+            free(input) ;
+            continue ;
         }
         handle_command(input, &shell);
     }
