@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:07 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 08:35:38 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/18 16:15:52 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,15 @@ void	ft_env(char **envp, t_shell *shell)
 	}
 	while (i < env_count)
 	{
-		newenv[i] = envp[i];
+		newenv[i] = ft_strdup(envp[i]); // ← copia real das strings
 		i++;
 	}
+	i = 0;
 	newenv[env_count] = NULL;
 	ft_sort_env(newenv, env_count);
 	ft_print_env(newenv);
+	while (newenv[i])
+		free(newenv[i++]);
 	free(newenv);
 	shell->exit_status = 0;
 }

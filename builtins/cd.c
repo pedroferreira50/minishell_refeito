@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 08:33:35 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:29:41 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	char	*path;
 	char	*old_pwd;
 	char	*new_pwd;
-
+	
 	old_pwd = getcwd(NULL, 0);
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
 		gotohome(&path, shell);
@@ -85,5 +85,5 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	free(new_pwd);
 	(*i)++;
 	shell->exit_status = 0;
-	return (0);
+	return (1);
 }

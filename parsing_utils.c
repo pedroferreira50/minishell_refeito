@@ -18,9 +18,8 @@ void add_argument(t_parse *state)
 	len = state->i - state->start;
 	if (state->cmd != NULL)
     	max_tokens = ft_strlen(state->cmd) / 2 + 2;
-	else 
+	else
     	max_tokens = 4;
-
     if (state->args_count < 0 || state->args_count >= (int)(max_tokens - 1)) // Leave space for NULL
     {
         ft_putstr_fd("minishell: error: too many tokens\n", STDERR_FILENO);

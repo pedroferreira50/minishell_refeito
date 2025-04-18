@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loc_vars.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:57 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/14 07:57:10 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/18 18:28:07 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void store_var(char *name, char *value, t_var **vars)
     }
     new_var = malloc(sizeof(t_var));
     if (!new_var)
-        return;
+        return ;
     new_var->name = ft_strdup(name);
     new_var->value = ft_strdup(value);
     new_var->exported = 0;

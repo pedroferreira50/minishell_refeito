@@ -127,7 +127,9 @@ void parse_input(char **args, int count, t_command_data *data, t_shell *shell);
 
 //builtins
 // check_execute_builtins.c
-int execute_builtin(int *i, t_shell *shell, t_command_data *data);
+int		child_builtin(int *i, t_shell *shell, t_command_data *data);
+void	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell);
+
 // builtins_utils.c
 int ft_isspace(int c);
 int	check_builtin(char *command);

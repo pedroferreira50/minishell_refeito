@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/10 17:29:25 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/18 20:21:23 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,22 @@ int ft_isspace(int c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || \
 		 c == '\f' || c == '\r');
+}
+void	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
+{
+	char	*cmd;
+	char	**args;
+
+	cmd = data->commands[state->i];
+	args = data->arguments[state->i];
+	if (!data || !data->commands[state->i])
+		return ;
+	if (ft_strcmp(cmd, "cd") == 0)
+		ft_cd(args, &state->i, shell);
+	else if (ft_strcmp(cmd, "export") == 0)
+		shell->exit_status = ft_export(args, shell);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		shell->exit_status = ft_unset(args, &shell->vars, &shell->envp);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		ft_exit(args, shell);
 }

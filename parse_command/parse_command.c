@@ -45,7 +45,7 @@ static void parse_loop(t_parse *state, t_shell *shell, t_parse_result *result, i
             break;
         state->start = state->i;
         if (!check_paren(state, shell, result))
-            return;
+            return ;
         if (!state->in_quotes && (state->cmd[state->i] == '<' || state->cmd[state->i] == '>' || state->cmd[state->i] == '|'))
         {
             if (!handle_operator(state, last_was_operator, shell))
@@ -54,7 +54,7 @@ static void parse_loop(t_parse *state, t_shell *shell, t_parse_result *result, i
                 result->quote_types = NULL;
                 return;
             }
-            continue;
+            continue ;
         }
         process_token(state, last_was_operator);
     }

@@ -65,7 +65,7 @@ static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell
     }
     if (has_builtin != 0)
     {
-        execute_builtin(&state->i, shell, data);
+        child_builtin(&state->i, shell, data);
         exit(shell->exit_status);
     }
     execute_command(data->commands[state->i], data->arguments[state->i], shell);
@@ -105,6 +105,7 @@ static void run_pipeline(t_command_data *data, t_exec_state *state, t_shell *she
         shell->exit_status = 1;
         return;
     }
+	parent_builtin(data, state, shell);
     pid = fork();
     if (pid == 0)
     {
@@ -118,7 +119,7 @@ static void run_pipeline(t_command_data *data, t_exec_state *state, t_shell *she
             perror("minishell: fork");
             free(pids);
             shell->exit_status = 1;
-            return;
+            return ;
         }
         manage_parent(pid, pids, state, data);
         state->i = state->i + 1;

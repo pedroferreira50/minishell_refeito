@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:08:13 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/10 17:09:13 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:30:52 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,6 @@ int	ft_unset(char **args, t_var **vars, char ***envp)
 	int	i;
 	int	status;
 
-	// if (!args[1])
-	// {
-	// 	print_error("minishell: unset: not enough arguments", "");
-	// 	return 1;
-	// }
 	i = 1;
 	status = 0;
 	while (args[i])

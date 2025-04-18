@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_execute_builtins.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 13:08:39 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/18 20:46:51 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,30 +77,19 @@ static int execute_builtin_command(char *command, char **args, t_shell *shell)
         ft_pwd();
         return (1);
     }
-    if (ft_strcmp(command, "export") == 0)
-    {
-        shell->exit_status = ft_export(args, shell);
-        return (1);
-    }
-    if (ft_strcmp(command, "unset") == 0)
-    {
-        shell->exit_status = ft_unset(args, &shell->vars, &shell->envp);
-        return (1);
-    }
     if (ft_strcmp(command, "env") == 0)
     {
         ft_env(shell->envp, shell);
         return (1);
     }
-    if (ft_strcmp(command, "exit") == 0)
+	if (ft_strcmp(command, "cd") == 0)
     {
-        ft_exit(args, shell);
         return (1);
     }
     return (0);
 }
 
-int execute_builtin(int *i, t_shell *shell, t_command_data *data)
+int child_builtin(int *i, t_shell *shell, t_command_data *data)
 {
     int original_stdin;
     int original_stdout;
@@ -115,14 +104,8 @@ int execute_builtin(int *i, t_shell *shell, t_command_data *data)
         return (1);
     if (handle_output_redirection(data, i, original_stdout, shell))
         return (1);
-    if (execute_builtin_command(command, args, shell))
-    {
-        if (ft_strcmp(command, "cd") == 0)
-            ft_cd(args, i, shell);
-        else
-            restore_fds(original_stdin, original_stdout);
-        return (0);
-    }
+	else
+		execute_builtin_command(command, args, shell);
     restore_fds(original_stdin, original_stdout);
     return (1);
 }

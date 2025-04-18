@@ -12,7 +12,7 @@ static void count_commands(char **args, int count, t_command_data *data, int *ar
     if (args == NULL)
     {
         shell->exit_status = 2;
-        return;
+        return 	;
     }
     while (idx.i < (size_t)count)
     {

@@ -7,6 +7,7 @@ void init_shell(t_shell *shell, char **envp)
     shell->exit_status = 0;
     g_signal = 0;
     setup_signals();
+
 }
 
 void handle_command(char *input, t_shell *shell)
@@ -14,7 +15,6 @@ void handle_command(char *input, t_shell *shell)
     t_parse_result parsed;
     t_command_data data;
 
-    
     if (strchr(input, '=') != NULL) //if is a loc var, skip execute
     {
         free(input);
@@ -23,7 +23,7 @@ void handle_command(char *input, t_shell *shell)
     parsed = parse_command(input, shell);
     free(input);
     if (parsed.args == NULL)
-        return;
+        return ;
     ft_memset(&data, 0, sizeof(t_command_data));
     parse_input(parsed.args, count_args(parsed.args), &data, shell);
     execute_commands(&data, shell);
@@ -56,7 +56,7 @@ int process_input(char *input, t_shell *shell)
     i = 0;
     while (input[i] && ft_isspace(input[i]))
         i++;
-    if (ft_strncmp(&input[i], "exit", 4) == 0)//why? if have builtin exit 
+    if (ft_strcmp(&input[i], "exit") == 0)//why? if have builtin exit
     {
         args = ft_split(input, ' ');
         if (args)

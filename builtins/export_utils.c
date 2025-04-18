@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 10:59:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/15 13:06:30 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/04/18 19:08:48 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int print_exported_env(t_shell *shell)
+int	print_exported_env(t_shell *shell)
 {
     int i;
     char *equal;
