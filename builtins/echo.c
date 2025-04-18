@@ -12,16 +12,6 @@
 
 #include "../minishell.h"
 
-/* static	int nb_args(char **args)
-{
-	int size;
-
-	size = 0;
-	while (args[size])
-		size++;
-	return (size);
-} */
-
 void	ft_echo(char **args, t_shell *shell)
 {
 	int	i;
@@ -29,8 +19,13 @@ void	ft_echo(char **args, t_shell *shell)
 
 	i = 1;
 	newline = 1;
-	if (args[i] && ft_strcmp(args[i], "-n") == 0)
+	while (args[i] && ft_strncmp(args[i], "-n", 2) == 0)
 	{
+		int j = 2;
+		while (args[i][j] == 'n') // accept -nnnn and -n -n -n -n
+			j++;
+		if (args[i][j] != '\0')
+			break;
 		newline = 0;
 		i++;
 	}
