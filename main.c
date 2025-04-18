@@ -14,6 +14,12 @@ void handle_command(char *input, t_shell *shell)
     t_parse_result parsed;
     t_command_data data;
 
+    
+    if (strchr(input, '=') != NULL) //if is a loc var, skip execute
+    {
+        free(input);
+        return ;
+    }
     parsed = parse_command(input, shell);
     free(input);
     if (parsed.args == NULL)
@@ -41,13 +47,16 @@ int process_input(char *input, t_shell *shell)
     if (input == NULL)
         return (0);
     if (input[0] == '\0')
+    {
+        free(input);
         return (1);
+    }
     g_signal = 0;
     shell->exit_status = 0;
     i = 0;
     while (input[i] && ft_isspace(input[i]))
         i++;
-    if (ft_strncmp(&input[i], "exit", 4) == 0)
+    if (ft_strncmp(&input[i], "exit", 4) == 0)//why? if have builtin exit 
     {
         args = ft_split(input, ' ');
         if (args)
@@ -88,11 +97,6 @@ int main(int argc, char *argv[], char *envp[])
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             break;
-        }
-        else if (process_input(input, &shell) == 1)// Assigning a variable, skip command execution
-        {
-            free(input) ;
-            continue ;
         }
         handle_command(input, &shell);
     }
