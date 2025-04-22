@@ -15,12 +15,13 @@ void handle_command(char *input, t_shell *shell)
     t_parse_result parsed;
     t_command_data data;
 
-    if (strchr(input, '=') != NULL) //if is a loc var, skip execute
+
+    parsed = parse_command(input, shell);
+    if (strchr(input, '=') != NULL && (ft_strcmp(parsed.args[0], "export") != 0)) //if is a loc var, skip execute
     {
         free(input);
         return ;
     }
-    parsed = parse_command(input, shell);
     free(input);
     if (parsed.args == NULL)
         return ;
