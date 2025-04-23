@@ -35,7 +35,6 @@ void handle_command(char *input, t_shell *shell)
 
 int process_input(char *input, t_shell *shell)
 {
-    char **args;
     int i;
 
     if (g_signal == SIGINT)
@@ -58,15 +57,6 @@ int process_input(char *input, t_shell *shell)
     i = 0;
     while (input[i] && ft_isspace(input[i]))
         i++;
-    if (ft_strcmp(&input[i], "exit") == 0)//why? if have builtin exit
-    {
-        args = ft_split(input, ' ');
-        if (args)
-        {
-            ft_exit(args, shell);
-            free_args(args, NULL);
-        }
-    }
     add_history(input);
     if (is_var_assignment(input))
     {
@@ -83,25 +73,34 @@ void finalize_shell(t_shell *shell)
     clear_history();
 }
 
+
+t_shell *get_shell()
+{
+	static t_shell shell;
+	return (&shell);
+}
+
 int main(int argc, char *argv[], char *envp[])
 {
-    t_shell shell;
+    t_shell *shell;
     char *input;
 
     (void)argc;
     (void)argv;
-    init_shell(&shell, envp);
+	shell = get_shell();
+    init_shell(shell, envp);
     rl_catch_signals = 0;
+
     while (1)
     {
         input = readline("minishell> ");
-        if (process_input(input, &shell) == 0)
+        if (process_input(input, shell) == 0)
         {
             ft_putstr_fd("exit\n", STDOUT_FILENO);
             break;
         }
-        handle_command(input, &shell);
+        handle_command(input, shell);
     }
-    finalize_shell(&shell);
-    return (shell.exit_status);
+    finalize_shell(shell);
+    return (shell->exit_status);
 }

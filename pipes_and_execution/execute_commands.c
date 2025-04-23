@@ -46,7 +46,7 @@ static pid_t *init_execution(t_command_data *data, t_exec_state *state, t_shell 
 
 static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
-    int has_builtin;
+	int has_builtin;
 
     has_builtin = 0;
     if (data->commands[state->i] == NULL)
@@ -63,13 +63,14 @@ static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell
     {
         close(state->pipefd[0]);
     }
-    if (has_builtin != 0)
+    if (has_builtin != 0 && get_shell()->is_save_to_execute == true)
     {
         child_builtin(&state->i, shell, data);
         exit(shell->exit_status);
     }
-    execute_command(data->commands[state->i], data->arguments[state->i], shell);
-    exit(1);
+	if(!has_builtin)
+		execute_command(data->commands[state->i], data->arguments[state->i], shell);
+	exit(1);
 }
 
 static void manage_parent(pid_t pid, pid_t *pids, t_exec_state *state, t_command_data *data)
@@ -164,19 +165,33 @@ static void wait_commands(pid_t *pids, t_command_data *data, t_shell *shell)
 void execute_parent(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
     if (ft_strcmp(data->commands[state->i], "cd") == 0)
+	{
         ft_cd(data->arguments[state->i], &state->i, shell);
+		get_shell()->is_save_to_execute = false;
+	}
     else if (ft_strcmp(data->commands[state->i], "export") == 0)
+	{
         shell->exit_status = ft_export(data->arguments[state->i], shell);
+		get_shell()->is_save_to_execute = false;
+	}
     else if (ft_strcmp(data->commands[state->i], "unset") == 0)
+	{
         shell->exit_status = ft_unset(data->arguments[state->i], &shell->vars, &shell->envp);
+		get_shell()->is_save_to_execute = false;
+
+	}
     else if (ft_strcmp(data->commands[state->i], "exit") == 0)
+	{
         ft_exit(data->arguments[state->i], shell);
+		get_shell()->is_save_to_execute = false;
+	}
 }
 
 int parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
     char *cmd;
 
+	get_shell()->is_save_to_execute = true;
     if (!data || !data->commands[state->i])
         return (0);
     cmd = data->commands[state->i];
@@ -231,6 +246,7 @@ void execute_commands(t_command_data *data, t_shell *shell)
             break;
         }
     }
+	get_shell()->is_save_to_execute = true;
     wait_commands(pids, data, shell);
     free_command_data(data);
     if (state.prev_pipe_read != -1)
