@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/23 16:21:36 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/23 19:16:33 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int handle_output_redirection(t_command_data *data, int *i, int original_stdout,
     return (0);
 }
 
-int	execute_builtin_command(char *command, char **args, t_shell *shell)
+int	execute_builtin_command(char *command, char **args, t_shell *shell, int *i)
 {
 	if (ft_strcmp(command, "echo") == 0)
 		return (ft_echo(args, shell), 1);
@@ -74,13 +74,13 @@ int	execute_builtin_command(char *command, char **args, t_shell *shell)
 	if (ft_strcmp(command, "env") == 0)
 		return (ft_env(shell->envp, shell), 1);
 	if (ft_strcmp(command, "cd") == 0)
-		return (1);
+		return (ft_cd(args, i, shell), 1);
 	if (ft_strcmp(command, "export") == 0)
-		return (1);
+		return (ft_export(args, shell), 1);
 	if (ft_strcmp(command, "unset") == 0)
-		return (1);
+		return (ft_unset(args, &shell->vars, &shell->envp), 1);
 	if (ft_strcmp(command, "exit") == 0)
-		return (1);
+		return (ft_exit(args, shell), 1);
 	return (0);
 }
 
@@ -101,7 +101,7 @@ int child_builtin(int *i, t_shell *shell, t_command_data *data)
 	if (handle_output_redirection(data, i, original_stdout, shell))
 		return (1);
 
-	execute_builtin_command(command, args, shell);
+	execute_builtin_command(command, args, shell, i);
 	restore_fds(original_stdin, original_stdout);
     return (1);
 }

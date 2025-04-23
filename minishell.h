@@ -43,6 +43,7 @@ typedef struct s_shell {
     char **envp;
     t_var *vars;
     int exit_status;
+	bool	is_save_to_execute;
 } t_shell;
 
 typedef struct s_parse {
@@ -111,10 +112,6 @@ void error_operator(char op, t_shell *shell);
 void error_paren(t_shell *shell);
 void error_pipe(t_shell *shell);
 
-//parser_command folder
-// parse_command.c
-t_parse_result parse_command(const char *cmd, t_shell *shell);
-// parse_command_utils.
 void initialize_state(t_parse *state, const char *cmd);
 int check_errors(t_parse *state, t_shell *shell, int last_was_operator);
 void finalize_result(t_parse *state, t_parse_result *result, const char *cmd);
@@ -128,13 +125,13 @@ void parse_input(char **args, int count, t_command_data *data, t_shell *shell);
 //builtins
 // check_execute_builtins.c
 int		child_builtin(int *i, t_shell *shell, t_command_data *data);
-int parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell);
+int		parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell);
 
 
 // builtins_utils.c
 int ft_isspace(int c);
 int	check_builtin(char *command);
-int	execute_builtin_command(char *command, char **args, t_shell *shell);
+int	execute_builtin_command(char *command, char **args, t_shell *shell, int *i);
 int handle_input_redirection(t_command_data *data, int *i, int original_stdin, t_shell *shell);
 int handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell);
 void restore_fds(int original_stdin, int original_stdout);
@@ -187,9 +184,8 @@ void execute_commands(t_command_data *data, t_shell *shell);
 //parser.c
 void expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
 
-
-
-
+t_parse_result parse_command(const char *cmd, t_shell *shell);
+t_shell *get_shell();
 
 
 #endif

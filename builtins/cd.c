@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/18 17:29:41 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/23 19:14:17 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	char	*path;
 	char	*old_pwd;
 	char	*new_pwd;
-	
+
 	old_pwd = getcwd(NULL, 0);
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
 		gotohome(&path, shell);
@@ -83,7 +83,8 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	ft_set_env(shell->envp, "PWD", new_pwd);
 	free(old_pwd);
 	free(new_pwd);
-	(*i)++;
+	if(i)
+		(*i)++;
 	shell->exit_status = 0;
 	return (1);
 }
