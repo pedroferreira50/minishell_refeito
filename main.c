@@ -17,7 +17,8 @@ void handle_command(char *input, t_shell *shell)
 
 
     parsed = parse_command(input, shell);
-    if (strchr(input, '=') != NULL && (ft_strcmp(parsed.args[0], "export") != 0)) //if is a loc var, skip execute
+    if (strchr(input, '=') != NULL && \
+	(ft_strcmp(parsed.args[0], "export") != 0))
     {
         free(input);
         return ;

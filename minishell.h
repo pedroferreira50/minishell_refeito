@@ -18,7 +18,7 @@ extern int g_signal;
 typedef struct s_var {
     char *name;
     char *value;
-    int exported;      // 0=shell var, 1=env var
+    int exported;
     struct s_var *next;
 } t_var;
 
@@ -128,11 +128,16 @@ void parse_input(char **args, int count, t_command_data *data, t_shell *shell);
 //builtins
 // check_execute_builtins.c
 int		child_builtin(int *i, t_shell *shell, t_command_data *data);
-void	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell);
+int parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell);
+
 
 // builtins_utils.c
 int ft_isspace(int c);
 int	check_builtin(char *command);
+int	execute_builtin_command(char *command, char **args, t_shell *shell);
+int handle_input_redirection(t_command_data *data, int *i, int original_stdin, t_shell *shell);
+int handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell);
+void restore_fds(int original_stdin, int original_stdout);
 //cd
 int	ft_cd(char **args, int *i, t_shell *shell);
 //echo

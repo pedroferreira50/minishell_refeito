@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/18 20:42:32 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/23 11:41:40 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,42 +47,45 @@ static void update_env_var(char *name, char *value, t_shell *shell)
     shell->envp = copy_envp_with_update(shell, new_entry, index);
     free(new_entry);
 }
-void export_var(char *name, char *value, t_shell *shell)
+void	add_env_var(t_shell *shell, char *new_entry, char *name)
 {
-    int i = 0;
-    char *new_env_entry;
-    int len;
-	int index;
+	int		len;
+	int		index;
 
-    char *tmp = ft_strjoin(name, "=");
-    new_env_entry = ft_strjoin(tmp, value);
-    free(tmp);
-
-    while (shell->envp[i])
-    {
-        if (ft_strncmp(shell->envp[i], name, ft_strlen(name)) == 0 && shell->envp[i][ft_strlen(name)] == '=')
-        {
-            free(shell->envp[i]);
-            shell->envp[i] = new_env_entry;
-            return;
-        }
-        i++;
-    }
-    len = 0;
-    while (shell->envp[len])
-        len++;
-    char **new_env = malloc(sizeof(char *) * (len + 2));
-    if (!new_env)
-        return;
-
-    // Copia as variáveis antigas
-    for (i = 0; i < len; i++)
-        new_env[i] = shell->envp[i];
-    new_env[len] = new_env_entry;
-    new_env[len + 1] = NULL;
-
+	len = 0;
+	while (shell->envp[len])
+		len++;
 	index = find_env_var_index(shell, name);
-    shell->envp = copy_envp_with_update(shell, new_env_entry, index);
+	shell->envp = copy_envp_with_update(shell, new_entry, index);
+}
+
+void	export_var(char *name, char *value, t_shell *shell)
+{
+	int		i;
+	char	*tmp;
+	char	*new_entry;
+
+	tmp = ft_strjoin(name, "=");
+	if (!tmp)
+		return ;
+	new_entry = ft_strjoin(tmp, value);
+	free(tmp);
+	if (!new_entry)
+		return ;
+	i = 0;
+	while (shell->envp[i])
+	{
+		if (ft_strncmp(shell->envp[i], name, ft_strlen(name)) == 0
+			&& shell->envp[i][ft_strlen(name)] == '=')
+		{
+			free(shell->envp[i]);
+			shell->envp[i] = new_entry;
+			return ;
+		}
+		i++;
+	}
+	add_env_var(shell, new_entry, name);
+	free(new_entry);
 }
 
 
@@ -101,8 +104,6 @@ int handle_export_with_value(char *arg, t_shell *shell)
     if (!is_valid_var_name(name))
         return (handle_invalid_identifier(name, shell));
     export_var(name, value, shell);
-	printf("teste\n\n\n");
-	print_exported_env(shell);
     return (0);
 }
 
@@ -135,7 +136,6 @@ int handle_export_without_value(char *arg, t_shell *shell)
 
 int ft_export(char **args, t_shell *shell)
 {
-	printf("teste1\n\n\n");
     int i;
     int status;
     char *equal;
@@ -146,11 +146,9 @@ int ft_export(char **args, t_shell *shell)
     i = 1;
     while (args[i])
     {
-		printf("%s\n", args[i]);
         equal = ft_strchr(args[i], '=');
         if (equal)
 		{
-			printf("teste2\n\n\n");
             status |= handle_export_with_value(args[i], shell);
 		}
 		else

@@ -6,13 +6,13 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/18 20:46:51 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:21:36 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void restore_fds(int original_stdin, int original_stdout)
+void restore_fds(int original_stdin, int original_stdout)
 {
     dup2(original_stdin, STDIN_FILENO);
     dup2(original_stdout, STDOUT_FILENO);
@@ -20,7 +20,7 @@ static void restore_fds(int original_stdin, int original_stdout)
     close(original_stdout);
 }
 
-static int handle_input_redirection(t_command_data *data, int *i, int original_stdin, t_shell *shell)
+int handle_input_redirection(t_command_data *data, int *i, int original_stdin, t_shell *shell)
 {
     int fd_in;
 
@@ -41,7 +41,7 @@ static int handle_input_redirection(t_command_data *data, int *i, int original_s
     return (0);
 }
 
-static int handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell)
+int handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell)
 {
     int fd_out;
 
@@ -65,29 +65,25 @@ static int handle_output_redirection(t_command_data *data, int *i, int original_
     return (0);
 }
 
-static int execute_builtin_command(char *command, char **args, t_shell *shell)
+int	execute_builtin_command(char *command, char **args, t_shell *shell)
 {
-    if (ft_strcmp(command, "echo") == 0)
-    {
-        ft_echo(args, shell);
-        return (1);
-    }
-    if (ft_strcmp(command, "pwd") == 0)
-    {
-        ft_pwd();
-        return (1);
-    }
-    if (ft_strcmp(command, "env") == 0)
-    {
-        ft_env(shell->envp, shell);
-        return (1);
-    }
+	if (ft_strcmp(command, "echo") == 0)
+		return (ft_echo(args, shell), 1);
+	if (ft_strcmp(command, "pwd") == 0)
+		return (ft_pwd(), 1);
+	if (ft_strcmp(command, "env") == 0)
+		return (ft_env(shell->envp, shell), 1);
 	if (ft_strcmp(command, "cd") == 0)
-    {
-        return (1);
-    }
-    return (0);
+		return (1);
+	if (ft_strcmp(command, "export") == 0)
+		return (1);
+	if (ft_strcmp(command, "unset") == 0)
+		return (1);
+	if (ft_strcmp(command, "exit") == 0)
+		return (1);
+	return (0);
 }
+
 
 int child_builtin(int *i, t_shell *shell, t_command_data *data)
 {
@@ -100,12 +96,12 @@ int child_builtin(int *i, t_shell *shell, t_command_data *data)
     original_stdout = dup(STDOUT_FILENO);
     command = data->commands[*i];
     args = data->arguments[*i];
-    if (handle_input_redirection(data, i, original_stdin, shell))
-        return (1);
-    if (handle_output_redirection(data, i, original_stdout, shell))
-        return (1);
-	else
-		execute_builtin_command(command, args, shell);
-    restore_fds(original_stdin, original_stdout);
+	if (handle_input_redirection(data, i, original_stdin, shell))
+		return (1);
+	if (handle_output_redirection(data, i, original_stdout, shell))
+		return (1);
+
+	execute_builtin_command(command, args, shell);
+	restore_fds(original_stdin, original_stdout);
     return (1);
 }

@@ -105,7 +105,6 @@ static void run_pipeline(t_command_data *data, t_exec_state *state, t_shell *she
         shell->exit_status = 1;
         return;
     }
-	parent_builtin(data, state, shell);
     pid = fork();
     if (pid == 0)
     {
@@ -162,6 +161,34 @@ static void wait_commands(pid_t *pids, t_command_data *data, t_shell *shell)
     }
     free(pids);
 }
+void execute_parent(t_command_data *data, t_exec_state *state, t_shell *shell)
+{
+    if (ft_strcmp(data->commands[state->i], "cd") == 0)
+        ft_cd(data->arguments[state->i], &state->i, shell);
+    else if (ft_strcmp(data->commands[state->i], "export") == 0)
+        shell->exit_status = ft_export(data->arguments[state->i], shell);
+    else if (ft_strcmp(data->commands[state->i], "unset") == 0)
+        shell->exit_status = ft_unset(data->arguments[state->i], &shell->vars, &shell->envp);
+    else if (ft_strcmp(data->commands[state->i], "exit") == 0)
+        ft_exit(data->arguments[state->i], shell);
+}
+
+int parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
+{
+    char *cmd;
+
+    if (!data || !data->commands[state->i])
+        return (0);
+    cmd = data->commands[state->i];
+	if (data->num_commands == 1 && check_builtin(cmd) &&
+		!data->input_file && !data->output_file && state->heredoc_fd == -1)
+    {
+        execute_parent(data, state, shell);
+        return (1);
+    }
+    return (0);
+}
+
 
 void execute_commands(t_command_data *data, t_shell *shell)
 {
@@ -178,8 +205,9 @@ void execute_commands(t_command_data *data, t_shell *shell)
     if (data == NULL || data->commands == NULL || data->num_commands == 0)
     {
         shell->exit_status = 2;
-        return;
+        return ;
     }
+	parent_builtin(data, &state, shell);
     pids = init_execution(data, &state, shell);
     if (pids == NULL)
         return;
