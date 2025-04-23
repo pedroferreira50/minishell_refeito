@@ -20,6 +20,7 @@ typedef struct s_var {
     char *value;
     int exported;
     struct s_var *next;
+	int	i; // TEST TO REMOVE
 } t_var;
 
 typedef struct s_parse_result {
