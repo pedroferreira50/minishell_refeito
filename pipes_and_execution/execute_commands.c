@@ -66,10 +66,14 @@ static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell
     if (has_builtin != 0 && get_shell()->is_save_to_execute == true)
     {
         child_builtin(&state->i, shell, data);
+		// free data state shell
+		free_command_data(data);
         exit(shell->exit_status);
     }
 	if(!has_builtin)
 		execute_command(data->commands[state->i], data->arguments[state->i], shell);
+	// free data state shell
+    free_command_data(data);
 	exit(1);
 }
 
