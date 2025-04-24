@@ -1,11 +1,49 @@
 #include "../minishell.h"
 
-void execute_command(char *command, char **args, t_shell *shell)
+// static void	free_args2(char **args)
+// {
+// 	int	i;
+
+// 	if (args)
+// 	{
+// 		i = 0;
+// 		while (args[i] != NULL)
+// 		{
+// 			free(args[i]);
+// 			i++;
+// 		}
+// 		free(args);
+// 	}
+// }
+void free_data_commands2(char ***commands, int num_commands)
+{
+    if (commands != NULL)
+    {
+        for (int i = 0; i < num_commands; i++)
+        {
+            if (commands[i] != NULL)
+            {
+                // Liberar o vetor de strings (cada "char **")
+                for (int j = 0; commands[i][j] != NULL; j++)
+                {
+                    free(commands[i][j]);  // Liberar cada argumento (char *)
+                }
+                free(commands[i]);  // Liberar o vetor de ponteiros (char **)
+            }
+        }
+        free(commands);  // Liberar o vetor principal de ponteiros (char ***)
+    }
+}
+
+
+
+void execute_command(char *command, char **args, t_shell *shell, pid_t *pids, t_command_data *data)
 {
     char *full_path;
 
     full_path = NULL;
     full_path = find_command_path(command, shell);
+
     if (full_path == NULL)
     {
         ft_putstr_fd("Command not found: ", 2);
@@ -13,11 +51,16 @@ void execute_command(char *command, char **args, t_shell *shell)
         ft_putstr_fd("\n", 2);
         shell->exit_status = 127;
         g_signal = 127;
+        free_command_data(data);
+        free(pids);
+        finalize_shell(shell);
+        free(full_path);
         exit(127);
     }
     execve(full_path, args, shell->envp);
     perror("execve");
     free(full_path);
+	printf("aqui124234\n\n\n");
     exit(shell->exit_status);
 }
 
@@ -44,7 +87,7 @@ static pid_t *init_execution(t_command_data *data, t_exec_state *state, t_shell 
     return (pids);
 }
 
-static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell)
+static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell, pid_t *pids)
 {
 	int has_builtin;
 
@@ -65,14 +108,15 @@ static void fork_child(t_command_data *data, t_exec_state *state, t_shell *shell
     }
     if (has_builtin != 0 && get_shell()->is_save_to_execute == true)
     {
+		//CHECK FREE...
         child_builtin(&state->i, shell, data);
-		// free data state shell
 		free_command_data(data);
-        exit(shell->exit_status);
+		free_args(shell->envp, NULL);
+		free_all_vars(&shell->vars);
+		exit(shell->exit_status);
     }
 	if(!has_builtin)
-		execute_command(data->commands[state->i], data->arguments[state->i], shell);
-	// free data state shell
+		execute_command(data->commands[state->i], data->arguments[state->i], shell, pids, data);
     free_command_data(data);
 	exit(1);
 }
@@ -114,7 +158,7 @@ static void run_pipeline(t_command_data *data, t_exec_state *state, t_shell *she
     if (pid == 0)
     {
         signal(SIGINT, SIG_DFL);
-        fork_child(data, state, shell);
+        fork_child(data, state, shell, pids);
     }
     else
     {
