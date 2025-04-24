@@ -13,6 +13,16 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
+#define NO_READLINE
+
+#ifdef NO_READLINE
+    // Aqui você pode usar fgets ou outras funções
+    #include <stdio.h>
+#else
+    #include <readline/readline.h>
+    #include <readline/history.h>
+#endif
+
 extern int g_signal;
 
 typedef struct s_var {
@@ -39,7 +49,8 @@ typedef struct s_command_data {
     int heredoc_quoted;
 } t_command_data;
 
-typedef struct s_shell {
+typedef struct s_shell
+{
     char **envp;
     t_var *vars;
     int exit_status;
@@ -83,11 +94,6 @@ void finalize_shell(t_shell *shell);
 
 // signal.c
 void setup_signals(void);
-
-// free_handling.c
-void free_args(char **args, t_command_data *data);
-void free_command_data(t_command_data *data);
-
 
 //handle_operator.c
 
@@ -155,7 +161,7 @@ void ft_exit(char **args, t_shell *shell);
 //loc_vars
 int is_valid_var_name(const char *name);
 void store_var(char *name, char *value, t_var **vars);
-void free_all_vars(t_var **vars);
+
 int is_var_assignment(const char *input);
 void handle_var_assignment(const char *input, t_shell *shell);
 
@@ -184,8 +190,19 @@ void execute_commands(t_command_data *data, t_shell *shell);
 //parser.c
 void expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
 
+
+
+
 t_parse_result parse_command(const char *cmd, t_shell *shell);
 t_shell *get_shell();
 
+
+
+//free
+void	free_data_commands(char **commands, int num_commands);
+void	free_data_arguments(char ***arguments, int num_commands);
+void	free_all_vars(t_var **vars);
+void	free_args(char **args, t_command_data *data);
+void	free_command_data(t_command_data *data);
 
 #endif

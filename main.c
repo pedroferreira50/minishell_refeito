@@ -28,9 +28,10 @@ void handle_command(char *input, t_shell *shell)
         return ;
     ft_memset(&data, 0, sizeof(t_command_data));
     parse_input(parsed.args, count_args(parsed.args), &data, shell);
-    execute_commands(&data, shell);
-    free_args(parsed.args, NULL);
+	free_args(parsed.args, NULL);
 	free(parsed.quote_types);
+    execute_commands(&data, shell);
+
 }
 
 int process_input(char *input, t_shell *shell)
@@ -74,6 +75,7 @@ void finalize_shell(t_shell *shell)
 }
 
 
+/// para chamar sem passar como parametro
 t_shell *get_shell()
 {
 	static t_shell shell;

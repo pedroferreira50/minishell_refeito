@@ -6,7 +6,7 @@ void initialize_state(t_parse *state, const char *cmd)
 
 	if (cmd != NULL)
     	max_tokens = ft_strlen(cmd) / 2 + 2;
-	else 
+	else
     	max_tokens = 4;
     ft_memset(state, 0, sizeof(t_parse));
     state->cmd = cmd;
@@ -14,8 +14,11 @@ void initialize_state(t_parse *state, const char *cmd)
     state->quote_types = malloc(sizeof(char) * max_tokens);
     if (!state->args || !state->quote_types)
     {
-        free(state->args);
-        free(state->quote_types);
+
+        if (state->args)
+		free(state->args);
+        if (state->quote_types)
+		free(state->quote_types);
         state->args = NULL;
         state->quote_types = NULL;
         return;

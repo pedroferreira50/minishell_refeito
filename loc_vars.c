@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:57 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/18 18:28:07 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:05:17 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,18 @@ void free_all_vars(t_var **vars)
     t_var *next;
 
     var = *vars;
-    while (var)
-    {
-        next = var->next;
-        free(var->name);
-        free(var->value);
-        free(var);
-        var = next;
-    }
-    *vars = NULL;
+	if(var)
+	{
+		while (var)
+		{
+			next = var->next;
+			free(var->name);
+			free(var->value);
+			free(var);
+			var = next;
+		}
+		*vars = NULL;
+	}
 }
 
 int is_var_assignment(const char *input)

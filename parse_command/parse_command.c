@@ -77,6 +77,7 @@ static int check_initial(const char *cmd, t_shell *shell, t_parse *state)
     return (1);
 }
 
+
 t_parse_result parse_command(const char *cmd, t_shell *shell)
 {
     t_parse state;

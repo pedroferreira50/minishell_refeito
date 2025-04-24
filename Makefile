@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -g -O0 -Wall -Werror -Wextra
+CFLAGS = -g -O0 -Wall -Werror -Wextra -lreadline
 LIBFT = ./libft/libft.a
 RM = rm -rf
 LIBS = -Llibft -lft -lreadline
@@ -15,6 +15,7 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		./builtins/unset.c \
 		./builtins/env.c \
 		./builtins/exit.c \
+		./builtins/env_utils.c \
 		./expand_vars/fill_expanded.c \
 		./expand_vars/var_expansion.c \
 		./parse_command/parse_command_utils.c \
@@ -23,7 +24,7 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		./pipes_and_execution/execute_commands.c \
 		./pipes_and_execution/heredoc.c \
 		./pipes_and_execution/pipeline.c \
-		env_utils.c error.c free_handling.c \
+		 error.c free_handling.c \
 		handle_operator.c loc_vars.c main.c \
 		parse_input_utils.c parse_input.c parser.c \
 		parsing_utils.c signal.c string_utils.c find_command_path.c
@@ -36,7 +37,7 @@ $(NAME) : $(OBJS)
 	@$(MAKE) --no-print-directory -C libft
 	@printf "\033[1;93m[LIBFT]\033[0m"
 	@printf "\033[1;92m  Success!\033[0m\n"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBS) -lreadline
 	@printf "\033[1;93m[Minishell]\033[0m"
 	@printf "\033[1;92m  Success!\033[0m\n"
 

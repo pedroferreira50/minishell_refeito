@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void	free_data_commands(char **commands, int num_commands)
+void	free_data_commands(char **commands, int num_commands)
 {
 	int	i;
 
@@ -17,7 +17,7 @@ static void	free_data_commands(char **commands, int num_commands)
 	}
 }
 
-static void	free_data_arguments(char ***arguments, int num_commands)
+void	free_data_arguments(char ***arguments, int num_commands)
 {
 	int	i;
 	int	j;
