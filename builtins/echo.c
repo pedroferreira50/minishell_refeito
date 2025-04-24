@@ -22,7 +22,7 @@ void	ft_echo(char **args, t_shell *shell)
 	while (args[i] && ft_strncmp(args[i], "-n", 2) == 0)
 	{
 		int j = 2;
-		while (args[i][j] == 'n') // accept -nnnn and -n -n -n -n
+		while (args[i][j] == 'n')
 			j++;
 		if (args[i][j] != '\0')
 			break;
