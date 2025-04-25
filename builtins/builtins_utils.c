@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/23 19:51:43 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/25 14:37:53 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ const char	*get_var_value(const char *name, t_var *vars)
 	return (NULL);
 }
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || \
 		 c == '\f' || c == '\r');

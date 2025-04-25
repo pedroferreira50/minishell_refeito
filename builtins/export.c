@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/24 17:30:25 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/04/24 17:58:39 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ static void	update_env_var(char *name, char *value, t_shell *shell)
 }
 void	add_env_var(t_shell *shell, char *new_entry, char *name)
 {
-	int		len;
-	int		index;
+	int len;
+	int index;
 
 	len = 0;
 	while (shell->envp[len])
@@ -61,33 +61,31 @@ void	add_env_var(t_shell *shell, char *new_entry, char *name)
 
 void	export_var(char *name, char *value, t_shell *shell)
 {
-	int		i;
-	char	*tmp;
-	char	*new_entry;
+	int i;
+	char *tmp;
+	char *new_entry;
 
 	tmp = ft_strjoin(name, "=");
 	if (!tmp)
-		return ;
+		return;
 	new_entry = ft_strjoin(tmp, value);
 	free(tmp);
 	if (!new_entry)
-		return ;
+		return;
 	i = 0;
 	while (shell->envp[i])
 	{
-		if (ft_strncmp(shell->envp[i], name, ft_strlen(name)) == 0
-			&& shell->envp[i][ft_strlen(name)] == '=')
+		if (ft_strncmp(shell->envp[i], name, ft_strlen(name)) == 0 && shell->envp[i][ft_strlen(name)] == '=')
 		{
 			free(shell->envp[i]);
 			shell->envp[i] = new_entry;
-			return ;
+			return;
 		}
 		i++;
 	}
 	add_env_var(shell, new_entry, name);
 	free(new_entry);
 }
-
 
 int	handle_export_with_value(char *arg, t_shell *shell)
 {
@@ -106,8 +104,6 @@ int	handle_export_with_value(char *arg, t_shell *shell)
 	export_var(name, value, shell);
 	return (0);
 }
-
-
 
 int	handle_export_without_value(char *arg, t_shell *shell)
 {
