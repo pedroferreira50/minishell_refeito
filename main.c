@@ -10,7 +10,7 @@ void init_shell(t_shell *shell, char **envp)
 
 }
 
-void handle_command(char *input, t_shell *shell)
+void	handle_command(char *input, t_shell *shell)
 {
     t_parse_result parsed;
     t_command_data data;
@@ -20,7 +20,7 @@ void handle_command(char *input, t_shell *shell)
     if (strchr(input, '=') != NULL && \
 	(ft_strcmp(parsed.args[0], "export") != 0))
     {
-        free(input);
+        free(input) ;
         return ;
     }
     free(input);
