@@ -13,15 +13,6 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
-#define NO_READLINE
-
-#ifdef NO_READLINE
-    // Aqui você pode usar fgets ou outras funções
-    #include <stdio.h>
-#else
-    #include <readline/readline.h>
-    #include <readline/history.h>
-#endif
 
 extern int g_signal;
 
@@ -142,67 +133,74 @@ int handle_input_redirection(t_command_data *data, int *i, int original_stdin, t
 int handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell);
 void restore_fds(int original_stdin, int original_stdout);
 //cd
-int	ft_cd(char **args, int *i, t_shell *shell);
+int				ft_cd(char **args, int *i, t_shell *shell);
 //echo
-void	ft_echo(char **args, t_shell *shell);
+void			ft_echo(char **args, t_shell *shell);
 //env
-void	ft_env(char **envp, t_shell *shell);
+void			ft_env(char **envp, t_shell *shell);
 //export
-int ft_export(char **args, t_shell *shell);
-int print_exported_env(t_shell *shell);
-int find_env_var_index(t_shell *shell, const char *name);
-char **copy_envp_with_update(t_shell *shell, char *new_entry, int replace_index);
+int				ft_export(char **args, t_shell *shell);
+int				print_exported_env(t_shell *shell);
+int				find_env_var_index(t_shell *shell, const char *name);
+char			**copy_envp_with_update(t_shell *shell, char *new_entry,
+					int replace_index);
 //pwd
-int	ft_pwd(void);
+int				ft_pwd(void);
 //unset
-int	ft_unset(char **args, t_var **vars, char ***envp);
+int				ft_unset(char **args, t_var **vars, char ***envp);
 //exit
-void ft_exit(char **args, t_shell *shell);
+void			ft_exit(char **args, t_shell *shell);
 //loc_vars
-int is_valid_var_name(const char *name);
-void store_var(char *name, char *value, t_var **vars);
+int				is_valid_var_name(const char *name);
+void			store_var(char *name, char *value, t_var **vars);
 
-int is_var_assignment(const char *input);
-void handle_var_assignment(const char *input, t_shell *shell);
+int				is_var_assignment(const char *input);
+void			handle_var_assignment(const char *input, t_shell *shell);
 
 //expand_vars folder
 // fill_expand.c
-size_t calc_expanded_size(const char *arg, char quote_type, t_shell *shell);
-void fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell);
+size_t			calc_expanded_size(const char *arg, char quote_type, t_shell *shell);
+void			fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell);
 // var_expansion.c
-size_t handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell);
-size_t get_var_len(const char *str, size_t i, t_var *vars, char **envp);
-char *get_var_value_helper(const char *name, t_var *vars, char **envp);
-char *expand_variables(const char *arg, char quote_type, t_shell *shell);
+size_t			handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell);
+size_t			get_var_len(const char *str, size_t i, t_var *vars, char **envp);
+char			*get_var_value_helper(const char *name, t_var *vars, char **envp);
+char			*expand_variables(const char *arg, char quote_type, t_shell *shell);
 
 //find_command_path.c
-char *find_command_path(char *command, t_shell *shell);
+char			*find_command_path(char *command, t_shell *shell);
 
 //pipes_and_execution folder
 // pipeline.c
-void setup_pipes_and_redirections(t_command_data *data, t_exec_state *state, int num_commands, t_shell *shell);
-int setup_pipeline(t_command_data *data, t_exec_state *state, t_shell *shell);
+void			setup_pipes_and_redirections(t_command_data *data, t_exec_state *state, int num_commands, t_shell *shell);
+int				setup_pipeline(t_command_data *data, t_exec_state *state, t_shell *shell);
 // heredoc.c
-int setup_heredoc(const char *delimiter, t_shell *shell, int suppress_expansion);
+int				setup_heredoc(const char *delimiter, t_shell *shell, int suppress_expansion);
+
 //  execute_commands.c
-void execute_commands(t_command_data *data, t_shell *shell);
-
+void			run_pipeline(t_command_data *data, t_exec_state *state,
+					t_shell *shell, pid_t *pids);
+void			fork_child(t_command_data *data, t_exec_state *state,
+					t_shell *shell, pid_t *pids);
+void			execute_command(int *i, t_shell *shell, pid_t *pids,
+					t_command_data *data);
+void			handle_interrupt_signals(pid_t *pids, t_exec_state *state,
+					t_command_data *data);
+void			handle_wait_status(int status, t_shell *shell);
+void			execute_commands(t_command_data *data, t_shell *shell);
+void			wait_commands(pid_t *pids, t_command_data *data, t_shell *shell);
 //parser.c
-void expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
-
-
-
-
-t_parse_result parse_command(const char *cmd, t_shell *shell);
-t_shell *get_shell();
+void 			expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
+t_parse_result	parse_command(const char *cmd, t_shell *shell);
+t_shell			*get_shell();
 
 
 
 //free
-void	free_data_commands(char **commands, int num_commands);
-void	free_data_arguments(char ***arguments, int num_commands);
-void	free_all_vars(t_var **vars);
-void	free_args(char **args, t_command_data *data);
-void	free_command_data(t_command_data *data);
+void			free_data_commands(char **commands, int num_commands);
+void			free_data_arguments(char ***arguments, int num_commands);
+void			free_all_vars(t_var **vars);
+void			free_args(char **args, t_command_data *data);
+void			free_command_data(t_command_data *data);
 
 #endif
