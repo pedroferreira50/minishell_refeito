@@ -193,6 +193,7 @@ void			wait_commands(pid_t *pids, t_command_data *data, t_shell *shell);
 void 			expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
 t_parse_result	parse_command(const char *cmd, t_shell *shell);
 t_shell			*get_shell();
+char			**expand_tokens(char **tokens, char *quote_types, t_shell *shell);
 
 
 

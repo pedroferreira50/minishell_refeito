@@ -15,12 +15,12 @@ void add_argument(t_parse *state)
     int len;
     size_t max_tokens;
 
-	len = state->i - state->start;
-	if (state->cmd != NULL)
-    	max_tokens = ft_strlen(state->cmd) / 2 + 2;
-	else
-    	max_tokens = 4;
-    if (state->args_count < 0 || state->args_count >= (int)(max_tokens - 1)) // Leave space for NULL
+    len = state->i - state->start;
+    if (state->cmd != NULL)
+        max_tokens = ft_strlen(state->cmd) / 2 + 2;
+    else
+        max_tokens = 4;
+    if (state->args_count < 0 || state->args_count >= (int)(max_tokens - 1))
     {
         ft_putstr_fd("minishell: error: too many tokens\n", STDERR_FILENO);
         return;
@@ -29,9 +29,10 @@ void add_argument(t_parse *state)
     if (state->args[state->args_count])
     {
         if (state->cmd[state->start] == '"' || state->cmd[state->start] == '\'')
-    		state->quote_types[state->args_count] = state->cmd[state->start];
-		else
-    		state->quote_types[state->args_count] = '\0';
+            state->quote_types[state->args_count] = state->cmd[state->start];
+        else
+            state->quote_types[state->args_count] = '\0';
+        state->quote_types[state->args_count + 1] = '\0';
         state->args_count++;
     }
     state->start = state->i;

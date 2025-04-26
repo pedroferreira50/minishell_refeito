@@ -5,9 +5,11 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 {
     char **expanded;
     t_indices idx;
+	size_t len;
+	char *tmp;
 
-	idx.i = 0;
-	idx.j = 0;
+    idx.i = 0;
+	len = 0;
     if (!tokens || !tokens[0])
         return (NULL);
     expanded = malloc(sizeof(char *) * (count_args(tokens) + 1));
@@ -24,8 +26,8 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
                 expanded[idx.i] = ft_strdup(tokens[idx.i]);
             if (quote_types[idx.i] == '"' || quote_types[idx.i] == '\'')
             {
-                char *tmp = expanded[idx.i];
-                size_t len = ft_strlen(tmp);
+                tmp = expanded[idx.i];
+                len = ft_strlen(tmp);
                 if (len >= 2 && tmp[0] == quote_types[idx.i] && tmp[len - 1] == quote_types[idx.i])
                 {
                     expanded[idx.i] = ft_strndup(tmp + 1, len - 2);

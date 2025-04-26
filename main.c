@@ -10,28 +10,34 @@ void init_shell(t_shell *shell, char **envp)
 
 }
 
-void	handle_command(char *input, t_shell *shell)
+void handle_command(char *input, t_shell *shell)
 {
     t_parse_result parsed;
     t_command_data data;
-
+    char **expanded_args;
 
     parsed = parse_command(input, shell);
-    if (strchr(input, '=') != NULL && \
-	(ft_strcmp(parsed.args[0], "export") != 0))
+    if (strchr(input, '=') != NULL && (ft_strcmp(parsed.args[0], "export") != 0))
     {
-        free(input) ;
-        return ;
+        free(input);
+        return;
     }
     free(input);
     if (parsed.args == NULL)
-        return ;
+        return;
+    expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
+    if (!expanded_args)
+    {
+        free_args(parsed.args, NULL);
+        free(parsed.quote_types);
+        return;
+    }
     ft_memset(&data, 0, sizeof(t_command_data));
-    parse_input(parsed.args, count_args(parsed.args), &data, shell);
-	free_args(parsed.args, NULL);
-	free(parsed.quote_types);
+    parse_input(expanded_args, count_args(expanded_args), &data, shell);
+    free_args(parsed.args, NULL);
+    free(parsed.quote_types);
+    free_args(expanded_args, NULL);
     execute_commands(&data, shell);
-
 }
 
 int process_input(char *input, t_shell *shell)

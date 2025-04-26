@@ -46,10 +46,10 @@ void finalize_result(t_parse *state, t_parse_result *result, const char *cmd)
 {
     size_t max_tokens;
 
-	if (cmd)
-    	max_tokens = ft_strlen(cmd) / 2 + 2;
-	else
-    	max_tokens = 4;
+    if (cmd)
+        max_tokens = ft_strlen(cmd) / 2 + 2;
+    else
+        max_tokens = 4;
     if (state->args_count < (int)max_tokens)
         state->args[state->args_count] = NULL;
     result->args = state->args;

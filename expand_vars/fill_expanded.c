@@ -42,18 +42,14 @@ size_t calc_expanded_size(const char *arg, char quote_type, t_shell *shell)
 
 static void fill_quotes(char *dest, const char *src, t_indices *indices, char quote_type)
 {
-    if (quote_type == '\'')
+    indices->i++;
+    while (src[indices->i] && src[indices->i] != quote_type)
     {
-        indices->i++;
-        while (src[indices->i] && src[indices->i] != '\'')
-            dest[indices->j++] = src[indices->i++];
+        dest[indices->j++] = src[indices->i++];
     }
-    else if (quote_type == '"')
-    {
+    if (src[indices->i] == quote_type)
         indices->i++;
-        while (src[indices->i] && src[indices->i] != '"')
-            dest[indices->j++] = src[indices->i++];
-    }
+    dest[indices->j] = '\0';
 }
 
 static void fill_exit_status(char *dest, t_indices *indices, t_shell *shell)
