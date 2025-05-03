@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 18:04:51 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 14:54:41 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 19:45:57 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,11 @@ void	handle_pipe(t_command_data *data, int *command_index, t_shell *shell)
 	shell->exit_status = 0;
 }
 
-void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
-			t_shell *shell)
+void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
 {
-	const char	*token;
+	const char *token = args[indices->i];
 
-	token = args[indices->i];
+	printf("handle_redirect called with token: %s\n", token);// called 2x WHYYYYYY ???
 	if (ft_strcmp(token, "<") == 0 && args[indices->i + 1] != NULL)
 	{
 		free(data->input_file);
@@ -58,6 +57,8 @@ void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
 	}
 	indices->i++;
 }
+
+
 
 void	handle_heredoc(char **args, t_command_data *data,
 			t_indices *indices, t_shell *shell)
