@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/26 17:25:48 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:38:10 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,31 +92,31 @@ int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 	return (0);
 }
 
-void execute_commands(t_command_data *data, t_shell *shell)
+void	execute_commands(t_command_data *data, t_shell *shell)
 {
-    t_exec_state state;
-    pid_t *pids;
+	t_exec_state	state;
+	pid_t			*pids;
 
-    state.pipefd[0] = 0;
-    state.pipefd[1] = 0;
-    state.prev_pipe_read = -1;
-    state.heredoc_fd = -1;
-    state.i = 0;
-    pids = NULL;
-    if (!data || !data->commands || data->num_commands == 0)
-        return ((void)(shell->exit_status = 2));
-    parent_builtin(data, &state, shell);
-    pids = init_execution(data, &state, shell);
-    if (pids == NULL)
-        return;
-    while (state.i < data->num_commands)
-    {
-        run_pipeline(data, &state, shell, pids);
-        if (g_signal != 0)
-        {
-            handle_interrupt_signals(pids, &state, data);
-            break;
-        }
-    }
-    finalize_execution(&state, pids, data, shell);
+	state.pipefd[0] = 0;
+	state.pipefd[1] = 0;
+	state.prev_pipe_read = -1;
+	state.heredoc_fd = -1;
+	state.i = 0;
+	pids = NULL;
+	if (!data || !data->commands || data->num_commands == 0)
+		return ((void)(shell->exit_status = 2));
+	parent_builtin(data, &state, shell);
+	pids = init_execution(data, &state, shell);
+	if (pids == NULL)
+		return ;
+	while (state.i < data->num_commands)
+	{
+		run_pipeline(data, &state, shell, pids);
+		if (g_signal != 0)
+		{
+			handle_interrupt_signals(pids, &state, data);
+			break ;
+		}
+	}
+	finalize_execution(&state, pids, data, shell);
 }

@@ -144,6 +144,9 @@ int				print_exported_env(t_shell *shell);
 int				find_env_var_index(t_shell *shell, const char *name);
 char			**copy_envp_with_update(t_shell *shell, char *new_entry,
 					int replace_index);
+void			add_env_var(t_shell *shell, char *new_entry, char *name);
+int				handle_invalid_identifier(char *name, t_shell *shell);
+int				print_exported_env(t_shell *shell);
 //pwd
 int				ft_pwd(void);
 //unset
@@ -160,6 +163,7 @@ void			handle_var_assignment(const char *input, t_shell *shell);
 //expand_vars folder
 // fill_expand.c
 size_t			calc_expanded_size(const char *arg, char quote_type, t_shell *shell);
+size_t			calc_var_size(const char *arg, t_indices *indices, t_shell *shell);
 void			fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell);
 // var_expansion.c
 size_t			handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell);

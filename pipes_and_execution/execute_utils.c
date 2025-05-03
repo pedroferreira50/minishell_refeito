@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:58:37 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/25 15:26:27 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:33:21 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,12 @@ void	execute_command(int *i, t_shell *shell, pid_t *pids,
 	exit(shell->exit_status);
 }
 
-
-
 void	run_pipeline(t_command_data *data, t_exec_state *state,
 	t_shell *shell, pid_t *pids)
 {
-pid_t	pid;
+	pid_t	pid;
 
-if (setup_pipeline(data, state, shell) == -1)
+	if (setup_pipeline(data, state, shell) == -1)
 	{
 		free(pids);
 		shell->exit_status = 1;
@@ -79,8 +77,6 @@ if (setup_pipeline(data, state, shell) == -1)
 		signal(SIGINT, SIG_DFL);
 		fork_child(data, state, shell, pids);
 	}
-	else
-	{
 	if (pid < 0)
 	{
 		perror("minishell: fork");
@@ -89,6 +85,5 @@ if (setup_pipeline(data, state, shell) == -1)
 		return ;
 	}
 	manage_parent(pid, pids, state, data);
-	state->i = state->i + 1;
-	}
+	state->i++;
 }

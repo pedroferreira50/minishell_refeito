@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:03:27 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/25 15:24:58 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:28:35 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	handle_interrupt_signals(pid_t *pids, t_exec_state *state,
 	while (i < data->num_commands)
 	{
 		if (pids[i] > 0)
-		kill(pids[i], SIGINT);
+			kill(pids[i], SIGINT);
 		i++;
 	}
 	if (state->prev_pipe_read != -1)
@@ -97,4 +97,3 @@ void	fork_child(t_command_data *data, t_exec_state *state,
 	free_command_data(data);
 	exit(1);
 }
-

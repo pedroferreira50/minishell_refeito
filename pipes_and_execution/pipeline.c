@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipeline.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/03 11:27:01 by scarlos-          #+#    #+#             */
+/*   Updated: 2025/05/03 11:27:42 by scarlos-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-static void setup_input_redirect(t_command_data *data, int i, t_shell *shell)
+static void	setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 {
-	int fd;
+	int	fd;
 
 	fd = -1;
 	if (i == 0 && data->input_file != NULL)
@@ -19,10 +31,11 @@ static void setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 	}
 }
 
-static void setup_output_redirect(t_command_data *data, int i, int num_commands, t_shell *shell)
+static void	setup_output_redirect(t_command_data *data, int i,
+				int num_commands, t_shell *shell)
 {
-	int fd;
-	int flags;
+	int	fd;
+	int	flags;
 
 	fd = -1;
 	flags = O_WRONLY | O_CREAT;
@@ -44,7 +57,8 @@ static void setup_output_redirect(t_command_data *data, int i, int num_commands,
 	}
 }
 
-void setup_pipes_and_redirections(t_command_data *data, t_exec_state *state, int num_commands, t_shell *shell)
+void	setup_pipes_and_redirections(t_command_data *data, t_exec_state *state,
+			int num_commands, t_shell *shell)
 {
 	if (state->i > 0)
 	{
@@ -59,9 +73,9 @@ void setup_pipes_and_redirections(t_command_data *data, t_exec_state *state, int
 	setup_output_redirect(data, state->i, num_commands, shell);
 }
 
-int setup_pipeline(t_command_data *data, t_exec_state *state, t_shell *shell)
+int	setup_pipeline(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
-	int result;
+	int	result;
 
 	result = 0;
 	if (state->i < data->num_commands - 1)
@@ -76,7 +90,8 @@ int setup_pipeline(t_command_data *data, t_exec_state *state, t_shell *shell)
 	}
 	if (data->heredoc_delim != NULL && state->i == 0)
 	{
-		state->heredoc_fd = setup_heredoc(data->heredoc_delim, shell, data->heredoc_quoted);
+		state->heredoc_fd = setup_heredoc(data->heredoc_delim, shell,
+				data->heredoc_quoted);
 		if (state->heredoc_fd == -1)
 		{
 			shell->exit_status = 1;
