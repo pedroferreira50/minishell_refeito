@@ -15,7 +15,6 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		./builtins/unset.c \
 		./builtins/env.c \
 		./builtins/exit.c \
-		./builtins/env_utils.c \
 		./expand_vars/fill_expanded.c \
 		./expand_vars/var_expansion.c \
 		./parse_command/parse_command_utils.c \

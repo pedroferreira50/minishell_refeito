@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/23 19:14:17 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 13:19:35 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ static int	gotohome(char **path, t_shell *shell)
 	return (0);
 }
 
-static int	handle_cd_error(t_shell *shell, char *old_pwd, const char *error_msg)
+static int	handle_cd_error(t_shell *shell, char *old_pwd,
+				const char *error_msg)
 {
 	if (error_msg)
 		perror(error_msg);
@@ -83,7 +84,7 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	ft_set_env(shell->envp, "PWD", new_pwd);
 	free(old_pwd);
 	free(new_pwd);
-	if(i)
+	if (i)
 		(*i)++;
 	shell->exit_status = 0;
 	return (1);

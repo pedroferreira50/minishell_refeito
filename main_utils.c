@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:25:17 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 12:26:41 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 13:21:37 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	init_shell(t_shell *shell, char **envp)
 	shell->exit_status = 0;
 	g_signal = 0;
 	setup_signals();
-
 }
 
 void	finalize_shell(t_shell *shell)
@@ -29,8 +28,9 @@ void	finalize_shell(t_shell *shell)
 	clear_history();
 }
 
-t_shell *get_shell()
+t_shell	*get_shell(void)
 {
-	static t_shell shell;
+	static t_shell	shell;
+
 	return (&shell);
 }

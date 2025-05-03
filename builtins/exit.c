@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:05:58 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 13:09:35 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 13:13:51 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	ft_exit(char **args, t_shell *shell)
 			print_numeric_error(args[1], shell);
 		if (args[2])
 		{
-			ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
+			ft_putstr_fd("minishell: exit: too many arguments\n", \
+				STDERR_FILENO);
 			shell->exit_status = 1;
 			return ;
 		}
