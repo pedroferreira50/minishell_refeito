@@ -78,10 +78,11 @@ typedef struct s_parse_state {
 } t_parse_state;
 
 // main.c
-void init_shell(t_shell *shell, char **envp);
-char *read_input(void);
-int process_input(char *input, t_shell *shell);
-void finalize_shell(t_shell *shell);
+t_shell			*get_shell();
+void		init_shell(t_shell *shell, char **envp);
+char		*read_input(void);
+int			process_input(char *input, t_shell *shell);
+void		finalize_shell(t_shell *shell);
 
 // signal.c
 void setup_signals(void);
@@ -196,7 +197,7 @@ void			wait_commands(pid_t *pids, t_command_data *data, t_shell *shell);
 //parser.c
 void 			expand_and_validate(char **tokens, char *quote_types, t_shell *shell);
 t_parse_result	parse_command(const char *cmd, t_shell *shell);
-t_shell			*get_shell();
+
 char			**expand_tokens(char **tokens, char *quote_types, t_shell *shell);
 
 

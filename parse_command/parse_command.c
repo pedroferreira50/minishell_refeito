@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:42:33 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:43:26 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 12:19:53 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,18 @@ t_parse_result	parse_command(const char *cmd, t_shell *shell)
 	result.quote_types = NULL;
 	initialize_state(&state, cmd);
 	if (!check_initial(cmd, shell, &state))
+	{
+		free(state.args);
+		free(state.quote_types);
 		return (result);
+	}
 	parse_loop(&state, shell, &result, &last_was_operator);
 	if (!check_errors(&state, shell, last_was_operator))
+	{
+		free(state.args);
+		free(state.quote_types);
 		return (result);
+	}
 	finalize_result(&state, &result, cmd);
 	return (result);
 }
