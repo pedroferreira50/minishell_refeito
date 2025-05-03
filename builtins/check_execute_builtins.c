@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/25 14:35:26 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 12:59:00 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ void	restore_fds(int original_stdin, int original_stdout)
 	close(original_stdout);
 }
 
-int	handle_input_redirection(t_command_data *data, int *i, int original_stdin, t_shell *shell)
+int	handle_input_redirection(t_command_data *data, int *i, int original_stdin,
+		t_shell *shell)
 {
-	int fd_in;
+	int	fd_in;
 
 	fd_in = -1;
 	if (*i == 0 && data->input_file)
@@ -41,17 +42,20 @@ int	handle_input_redirection(t_command_data *data, int *i, int original_stdin, t
 	return (0);
 }
 
-int	handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell)
+int	handle_output_redirection(t_command_data *data, int *i,
+		int original_stdout, t_shell *shell)
 {
-	int fd_out;
+	int	fd_out;
 
 	fd_out = -1;
 	if (*i == data->num_commands - 1 && data->output_file)
 	{
 		if (data->append_output)
-			fd_out = open(data->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			fd_out = open(data->output_file, O_WRONLY | O_CREAT | \
+				O_APPEND, 0644);
 		else
-			fd_out = open(data->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			fd_out = open(data->output_file, O_WRONLY | O_CREAT | \
+				O_TRUNC, 0644);
 		if (fd_out == -1)
 		{
 			perror("open output file");
@@ -86,10 +90,10 @@ int	execute_builtin_command(char *command, char **args, t_shell *shell, int *i)
 
 int	child_builtin(int *i, t_shell *shell, t_command_data *data)
 {
-	int original_stdin;
-	int original_stdout;
-	char *command;
-	char **args;
+	int		original_stdin;
+	int		original_stdout;
+	char	*command;
+	char	**args;
 
 	original_stdin = dup(STDIN_FILENO);
 	original_stdout = dup(STDOUT_FILENO);
@@ -99,7 +103,6 @@ int	child_builtin(int *i, t_shell *shell, t_command_data *data)
 		return (1);
 	if (handle_output_redirection(data, i, original_stdout, shell))
 		return (1);
-
 	execute_builtin_command(command, args, shell, i);
 	restore_fds(original_stdin, original_stdout);
 	return (1);
