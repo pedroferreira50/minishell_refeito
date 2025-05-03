@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 15:08:13 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 16:36:02 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_command(char *input, t_shell *shell)
 	char			**expanded_args;
 
 	parsed = parse_command(input, shell);
-	if (strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
+	if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
 		return (handle_assignment_non_export(input, &parsed), (void)0);
 	free(input);
 	if (!parsed.args)
@@ -41,8 +41,8 @@ void	handle_command(char *input, t_shell *shell)
 	ft_memset(&data, 0, sizeof(t_command_data));
 	parse_input(expanded_args, count_args(expanded_args), &data, shell);
 	free_args(parsed.args, NULL);
-	free(parsed.quote_types);
 	free_args(expanded_args, NULL);
+	free(parsed.quote_types);
 	execute_commands(&data, shell);
 }
 

@@ -3,10 +3,10 @@
 
 char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 {
-    char **expanded;
-    t_indices idx;
-	size_t len;
-	char *tmp;
+    char		**expanded;
+    t_indices	idx;
+	size_t		len;
+	char		*tmp;
 
     idx.i = 0;
 	len = 0;
@@ -43,7 +43,7 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 
 int validate_command(char **args, t_shell *shell)
 {
-    struct stat st; //verify if we can use this
+    struct stat	st; //verify if we can use this
 
     if (!args || !args[0])
     {

@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:42:33 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 15:19:12 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 16:39:33 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,26 +93,19 @@ static int	check_initial(const char *cmd, t_shell *shell, t_parse *state)
 
 t_parse_result	parse_command(const char *cmd, t_shell *shell)
 {
-	t_parse state;
-	t_parse_result result;
-	int last_was_operator;
+	t_parse			state;
+	t_parse_result	result;
+	int				last_was_operator;
 
 	last_was_operator = 0;
 	result.args = NULL;
 	result.quote_types = NULL;
 	initialize_state(&state, cmd);
 	if (!check_initial(cmd, shell, &state))
-	{
-		free_state(&state);
-		return result;
-	}
+		return (free_state(&state), result);
 	parse_loop(&state, shell, &result, &last_was_operator);
 	if (!check_errors(&state, shell, last_was_operator))
-	{
-		free_state(&state);
-		return result;
-	}
+		return (free_state(&state), result);
 	finalize_result(&state, &result, cmd);
-	free_state(&state);
-	return result;
+	return (result);
 }
