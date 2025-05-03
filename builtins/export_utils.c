@@ -6,34 +6,22 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 10:59:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/24 17:27:43 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 11:59:54 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	print_exported_env(t_shell *shell)
+void	add_env_var(t_shell *shell, char *new_entry, char *name)
 {
-	int		i;
-	char	*equal;
+	int	len;
+	int	index;
 
-	i = 0;
-	while (shell->envp[i])
-	{
-		equal = ft_strchr(shell->envp[i], '=');
-		if (equal)
-		{
-			*equal = '\0';
-			ft_putstr_fd("declare -x ", STDOUT_FILENO);
-			ft_putstr_fd(shell->envp[i], STDOUT_FILENO);
-			ft_putstr_fd("=\"", STDOUT_FILENO);
-			ft_putstr_fd(equal + 1, STDOUT_FILENO);
-			ft_putstr_fd("\"\n", STDOUT_FILENO);
-			*equal = '=';
-		}
-		i++;
-	}
-	return (0);
+	len = 0;
+	while (shell->envp[len])
+		len++;
+	index = find_env_var_index(shell, name);
+	shell->envp = copy_envp_with_update(shell, new_entry, index);
 }
 
 int	find_env_var_index(t_shell *shell, const char *name)
@@ -47,14 +35,16 @@ int	find_env_var_index(t_shell *shell, const char *name)
 	i = 0;
 	while (shell->envp[i])
 	{
-		if (ft_strncmp(shell->envp[i], name, len) == 0 && shell->envp[i][len] == '=')
+		if (ft_strncmp(shell->envp[i], name, len) == 0 && \
+				shell->envp[i][len] == '=')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-void	fill_updated_envp(t_shell *shell, char **new_envp, char *new_entry, int replace_index)
+void	fill_updated_envp(t_shell *shell, char **new_envp, char *new_entry,
+			int replace_index)
 {
 	int	i;
 	int	j;
@@ -75,7 +65,8 @@ void	fill_updated_envp(t_shell *shell, char **new_envp, char *new_entry, int rep
 	new_envp[j] = NULL;
 }
 
-char	**copy_envp_with_update(t_shell *shell, char *new_entry, int replace_index)
+char	**copy_envp_with_update(t_shell *shell, char *new_entry,
+			int replace_index)
 {
 	int		count;
 	int		new_size;

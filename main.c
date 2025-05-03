@@ -1,108 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
+/*   Updated: 2025/05/03 16:36:02 by scarlos-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void init_shell(t_shell *shell, char **envp)
+void	handle_assignment_non_export(char *input, t_parse_result *parsed)
 {
-    shell->envp = copy_envp(envp);
-    shell->vars = NULL;
-    shell->exit_status = 0;
-    g_signal = 0;
-    setup_signals();
-
+	free(input);
+	free_args(parsed->args, NULL);
+	free(parsed->quote_types);
 }
 
-void handle_command(char *input, t_shell *shell)
+void	handle_command(char *input, t_shell *shell)
 {
-    t_parse_result parsed;
-    t_command_data data;
+	t_parse_result	parsed;
+	t_command_data	data;
+	char			**expanded_args;
 
-
-    parsed = parse_command(input, shell);
-    if (strchr(input, '=') != NULL && \
-	(ft_strcmp(parsed.args[0], "export") != 0))
-    {
-        free(input);
-        return ;
-    }
-    free(input);
-    if (parsed.args == NULL)
-        return ;
-    ft_memset(&data, 0, sizeof(t_command_data));
-    parse_input(parsed.args, count_args(parsed.args), &data, shell);
+	parsed = parse_command(input, shell);
+	if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
+		return (handle_assignment_non_export(input, &parsed), (void)0);
+	free(input);
+	if (!parsed.args)
+		return ;
+	expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
+	if (!expanded_args)
+	{
+		free_args(parsed.args, NULL);
+		free(parsed.quote_types);
+		return ;
+	}
+	ft_memset(&data, 0, sizeof(t_command_data));
+	parse_input(expanded_args, count_args(expanded_args), &data, shell);
 	free_args(parsed.args, NULL);
+	free_args(expanded_args, NULL);
 	free(parsed.quote_types);
-    execute_commands(&data, shell);
-
+	execute_commands(&data, shell);
 }
 
-int process_input(char *input, t_shell *shell)
+int	process_input(char *input, t_shell *shell)
 {
-    int i;
+	int i;
 
-    if (g_signal == SIGINT)
-    {
-        shell->exit_status = 130;
-        g_signal = 0;
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
-    if (input == NULL)
-        return (0);
-    if (input[0] == '\0')
-    {
-        free(input);
-        return (1);
-    }
-    g_signal = 0;
-    shell->exit_status = 0;
-    i = 0;
-    while (input[i] && ft_isspace(input[i]))
-        i++;
-    add_history(input);
-    if (is_var_assignment(input))
-    {
-        handle_var_assignment(input, shell);
-        return (1);
-    }
-    return (2);
+	if (g_signal == SIGINT)
+	{
+		shell->exit_status = 130;
+		g_signal = 0;
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+	if (input == NULL)
+		return (0);
+	if (input[0] == '\0')
+	{
+		free(input);
+		return (1);
+	}
+	g_signal = 0;
+	shell->exit_status = 0;
+	i = 0;
+	while (input[i] && ft_isspace(input[i]))
+		i++;
+	add_history(input);
+	if (is_var_assignment(input))
+	{
+		handle_var_assignment(input, shell);
+		return (1);
+	}
+	return (2);
 }
 
-void finalize_shell(t_shell *shell)
+int	main(int argc, char *argv[], char *envp[])
 {
-    free_args(shell->envp, NULL);
-    free_all_vars(&shell->vars);
-    clear_history();
-}
+	t_shell *shell;
+	char *input;
 
-
-/// para chamar sem passar como parametro
-t_shell *get_shell()
-{
-	static t_shell shell;
-	return (&shell);
-}
-
-int main(int argc, char *argv[], char *envp[])
-{
-    t_shell *shell;
-    char *input;
-
-    (void)argc;
-    (void)argv;
+	(void)argc;
+	(void)argv;
 	shell = get_shell();
-    init_shell(shell, envp);
-    rl_catch_signals = 0;
+	init_shell(shell, envp);
+	rl_catch_signals = 0;
 
-    while (1)
-    {
-        input = readline("minishell> ");
-        if (process_input(input, shell) == 0)
-        {
-            ft_putstr_fd("exit\n", STDOUT_FILENO);
-            break;
-        }
-        handle_command(input, shell);
-    }
-    finalize_shell(shell);
-    return (shell->exit_status);
+	while (1)
+	{
+		input = readline("minishell> ");
+		if (process_input(input, shell) == 0)
+		{
+			ft_putstr_fd("exit\n", STDOUT_FILENO);
+			break;
+		}
+		handle_command(input, shell);
+	}
+	finalize_shell(shell);
+	return (shell->exit_status);
 }

@@ -2,28 +2,4 @@
    Memcheck:Leak
    fun:readline
 }
-
 // valgrind --suppressions=.ignore_readline ./minishell
-
-// minishell> cat << teste.txt
-// >
-// > asf
-// > asdf
-// > fsdaf
-
-// ==57687== Invalid read of size 4
-// ==57687==    at 0x10D00F: execute_commands (execute_commands.c:285)
-// ==57687==    by 0x10E39E: handle_command (main.c:33)
-// ==57687==    by 0x10E5A5: main (main.c:104)
-// ==57687==  Address 0x4c04b70 is 0 bytes inside a block of size 4 free'd
-// ==57687==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-// ==57687==    by 0x10CA75: run_pipeline (execute_commands.c:153)
-// ==57687==    by 0x10CFE7: execute_commands (execute_commands.c:279)
-// ==57687==    by 0x10E39E: handle_command (main.c:33)
-// ==57687==    by 0x10E5A5: main (main.c:104)
-// ==57687==  Block was alloc'd at
-// ==57687==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-// ==57687==    by 0x10C739: init_execution (execute_commands.c:77)
-// ==57687==    by 0x10CFBB: execute_commands (execute_commands.c:274)
-// ==57687==    by 0x10E39E: handle_command (main.c:33)
-// ==57687==    by 0x10E5A5: main (main.c:104)
