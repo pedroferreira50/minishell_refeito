@@ -14,69 +14,74 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
-
-
 extern int g_signal;
 
-typedef struct s_var {
-    char *name;
-    char *value;
-    int exported;
-    struct s_var *next;
+typedef struct s_var
+{
+	char *name;
+	char *value;
+	int exported;
+	struct s_var *next;
 } t_var;
 
-typedef struct s_parse_result {
-    char **args;
-    char *quote_types;
+typedef struct s_parse_result
+{
+	char **args;
+	char *quote_types;
 } t_parse_result;
 
-typedef struct s_command_data {
-    char **commands;
-    char ***arguments;
-    char *heredoc_delim;
-    char *input_file;
-    char *output_file;
-    int append_output;
-    int num_commands;
-    int num_pipes;
-    int heredoc_quoted;
+typedef struct s_command_data
+{
+	char **commands;
+	char ***arguments;
+	char *heredoc_delim;
+	char *input_file;
+	char *output_file;
+	int append_output;
+	int num_commands;
+	int num_pipes;
+	int heredoc_quoted;
 } t_command_data;
 
 typedef struct s_shell
 {
-    char **envp;
-    t_var *vars;
-    int exit_status;
+	char **envp;
+	t_var *vars;
+	int exit_status;
 	bool	is_save_to_execute;
 } t_shell;
 
-typedef struct s_parse {
-    char **args;
-    int args_count;
-    int in_quotes;      // Changed from bool
-    char quote_char;
-    size_t i;
-    size_t start;
-    int brace_count;
-    const char *cmd;
-    char *quote_types;
+typedef struct s_parse
+{
+	char **args;
+	int args_count;
+	int in_quotes;
+	char quote_char;
+	size_t i;
+	size_t start;
+	int brace_count;
+	const char *cmd;
+	char *quote_types;
 } t_parse;
 
-typedef struct s_exec_state {
-    int pipefd[2];
-    int prev_pipe_read;
-    int heredoc_fd;
-    int i;
+typedef struct s_exec_state
+{
+	int pipefd[2];
+	int prev_pipe_read;
+	int heredoc_fd;
+	int i;
 } t_exec_state;
 
-typedef struct s_indices {
-    size_t i;
-    size_t j;
+typedef struct s_indices
+{
+	size_t i;
+	size_t j;
 } t_indices;
 
-typedef struct s_parse_state {
-    t_indices idx;
-    int command_index;
+typedef struct s_parse_state
+{
+	t_indices idx;
+	int command_index;
 } t_parse_state;
 
 // main.c
@@ -86,6 +91,7 @@ char		*read_input(void);
 int			process_input(char *input, t_shell *shell);
 void		finalize_shell(t_shell *shell);
 
+
 // signal.c
 void setup_signals(void);
 
@@ -94,6 +100,15 @@ void setup_signals(void);
 void handle_pipe(t_command_data *data, int *command_index, t_shell *shell);
 void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell);
 void handle_heredoc(char **args, t_command_data *data, t_indices *indices, t_shell *shell);
+void	handle_pipe_increment(t_command_data *data, int *command_index);
+void		handle_redirect_file(char **args, t_command_data *data,
+	t_indices *indices, t_shell *shell);
+void		handle_input_redirect(char **args, t_command_data *data,
+	t_indices *indices, t_shell *shell);
+void		handle_output_redirect(char **args, t_command_data *data,
+	t_indices *indices, t_shell *shell);
+void		handle_append_redirect(char **args, t_command_data *data,
+	t_indices *indices, t_shell *shell);
 
 // env_utils.c
 char **copy_envp(char **envp);
@@ -210,5 +225,6 @@ void			free_data_arguments(char ***arguments, int num_commands);
 void			free_all_vars(t_var **vars);
 void			free_args(char **args, t_command_data *data);
 void			free_command_data(t_command_data *data);
+void			free_state(t_parse *state);
 
 #endif

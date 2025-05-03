@@ -6,11 +6,25 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:36:00 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:40:22 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 15:05:08 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_state(t_parse *state)
+{
+	if (state->args)
+	{
+		free(state->args);
+		state->args = NULL;
+	}
+	if (state->quote_types)
+	{
+		free(state->quote_types);
+		state->quote_types = NULL;
+	}
+}
 
 void	initialize_state(t_parse *state, const char *cmd)
 {

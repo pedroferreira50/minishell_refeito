@@ -28,7 +28,7 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		error.c free_handling.c \
 		handle_operator.c loc_vars.c main.c \
 		parse_input_utils.c parse_input.c parser.c main_utils.c \
-		parsing_utils.c signal.c string_utils.c find_command_path.c
+		parsing_utils.c signal.c find_command_path.c
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 

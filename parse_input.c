@@ -104,7 +104,7 @@ static void	handle_operator_wrapper(char **args, t_command_data *data, t_parse_s
 	{
 		state->command_index++;
 		state->idx.j = 0;
-		return;
+		return ;
 	}
 	if (ft_strcmp(args[state->idx.i], "<<") == 0)
 		handle_heredoc(args, data, &state->idx, shell);

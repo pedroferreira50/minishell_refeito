@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:42:33 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 12:19:53 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/03 15:19:12 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ static int	check_initial(const char *cmd, t_shell *shell, t_parse *state)
 	if (cmd && cmd[0] == '|')
 	{
 		error_pipe(shell);
-		free(state->args);
-		free(state->quote_types);
 		return (0);
 	}
 	return (1);
@@ -95,9 +93,9 @@ static int	check_initial(const char *cmd, t_shell *shell, t_parse *state)
 
 t_parse_result	parse_command(const char *cmd, t_shell *shell)
 {
-	t_parse			state;
-	t_parse_result	result;
-	int				last_was_operator;
+	t_parse state;
+	t_parse_result result;
+	int last_was_operator;
 
 	last_was_operator = 0;
 	result.args = NULL;
@@ -105,17 +103,16 @@ t_parse_result	parse_command(const char *cmd, t_shell *shell)
 	initialize_state(&state, cmd);
 	if (!check_initial(cmd, shell, &state))
 	{
-		free(state.args);
-		free(state.quote_types);
-		return (result);
+		free_state(&state);
+		return result;
 	}
 	parse_loop(&state, shell, &result, &last_was_operator);
 	if (!check_errors(&state, shell, last_was_operator))
 	{
-		free(state.args);
-		free(state.quote_types);
-		return (result);
+		free_state(&state);
+		return result;
 	}
 	finalize_result(&state, &result, cmd);
-	return (result);
+	free_state(&state);
+	return result;
 }

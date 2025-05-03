@@ -3,6 +3,7 @@
 		"chrono": "c",
 		"minishell.h": "c",
 		"stdbool.h": "c",
-		"string.h": "c"
+		"string.h": "c",
+		"libft.h": "c"
 	}
 }
