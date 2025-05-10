@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:35:24 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:42:13 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/10 16:54:55 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	handle_quotes(t_parse *state)
 	{
 		state->quote_char = state->cmd[state->i];
 		state->in_quotes = 1;
-		state->i++;
+		// state->i++; falha em caso de teste''teste
 	}
 	else if (state->cmd[state->i] == state->quote_char && \
 				state->in_quotes && state->brace_count == 0)

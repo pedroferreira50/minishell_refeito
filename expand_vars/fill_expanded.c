@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_expanded.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:44:40 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 04:53:11 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:08:27 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,44 +57,64 @@ static void fill_exit_status(char *dest, t_indices *indices, t_shell *shell)
 
 static void fill_var_name(char *dest, const char *src, t_indices *indices, t_shell *shell)
 {
-    size_t var_len;
-    char *key;
-    char *val;
+	size_t	start;
+	char	*key;
+	char	*val;
 
-	var_len = 0;
-    while (ft_isalnum(src[indices->i + 1 + var_len]) || src[indices->i + 1 + var_len] == '_')
-        var_len++;
-    key = ft_strndup(&src[indices->i + 1], var_len);
-    if (!key)
-        return;
-    val = get_var_value_helper(key, shell->vars, shell->envp);
-    if (val)
-    {
-        ft_strcpy(&dest[indices->j], val);
-        indices->j += ft_strlen(val);
-    }
-    free(key);
-    indices->i += var_len + 1;
+	indices->i++;
+	start = indices->i;
+	if (!isalpha(src[start]) && src[start] != '_')
+	{
+		dest[indices->j++] = '$';
+		return;
+	}
+	while (isalnum(src[indices->i]) || src[indices->i] == '_')
+		indices->i++;
+	key = ft_strndup(&src[start], indices->i - start);
+	if (!key)
+		return;
+	val = get_var_value_helper(key, shell->vars, shell->envp);
+	if (val)
+	{
+		ft_strcpy(&dest[indices->j], val);
+		indices->j += ft_strlen(val);
+	}
+	free(key);
 }
+
+
 
 void fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell)
 {
     t_indices indices;
 
-	indices.i = 0;
-	indices.j = 0;
+    indices.i = 0;
+    indices.j = 0;
     if (!dest || !src)
         return;
+
     if (quote_type == '\'')
         return fill_quotes(dest, src, &indices, quote_type);
+
     while (src[indices.i])
     {
-        if (src[indices.i] == '$' && src[indices.i + 1] == '?')
-            fill_exit_status(dest, &indices, shell);
-        else if (src[indices.i] == '$' && (ft_isalpha(src[indices.i + 1]) || src[indices.i + 1] == '_'))
-            fill_var_name(dest, src, &indices, shell);
+        if (src[indices.i] == '$')
+        {
+            // Expansão de $? (exit status)
+            if (src[indices.i + 1] == '?')
+                fill_exit_status(dest, &indices, shell);
+            // Expansão de variáveis válidas (letras ou _)
+            else if (ft_isalpha(src[indices.i + 1]) || src[indices.i + 1] == '_')
+                fill_var_name(dest, src, &indices, shell);
+            // Qualquer outro caractere: copia $ como literal
+            else
+                dest[indices.j++] = src[indices.i++];
+        }
         else
+        {
+            // Cópia literal de outros caracteres
             dest[indices.j++] = src[indices.i++];
+        }
     }
     dest[indices.j] = '\0';
 }

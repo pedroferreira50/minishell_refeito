@@ -6,30 +6,35 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:12 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:50:27 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:09:20 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-size_t	calc_var_size(const char *arg, t_indices *indices,
-	t_shell *shell)
+size_t calc_var_size(const char *arg, t_indices *indices, t_shell *shell)
 {
+	size_t	start;
 	size_t	var_len;
+	char	*var_name;
+	char	*var_value;
 
 	if (arg[indices->i + 1] == '?')
-		return (handle_exit_status(NULL, 0, &indices->i, shell));
-	if (isalpha(arg[indices->i + 1]) || arg[indices->i + 1] == '_')
-	{
-		var_len = get_var_len(arg, indices->i, shell->vars, shell->envp);
-		while (isalnum(arg[indices->i + 1]) || arg[indices->i + 1] == '_')
-		{
-			indices->i++;
-			indices->i++;
-		}
-		return (var_len);
-	}
-	return (0);
+		return handle_exit_status(NULL, 0, &indices->i, shell);
+	indices->i++; // skip the $
+	start = indices->i;
+	// if the first character is not valid, it's not a variable
+	if (!isalpha(arg[start]) && arg[start] != '_')
+		return (1);
+	while (isalnum(arg[indices->i]) || arg[indices->i] == '_')
+		indices->i++;
+	var_name = ft_strndup(&arg[start], indices->i - start);
+	if (!var_name)
+		return (0);
+	var_value = get_var_value_helper(var_name, shell->vars, shell->envp);
+	var_len = ft_strlen(var_value);
+	free(var_name);
+	return (var_len);
 }
 
 size_t	handle_exit_status(char *dest, int fill, size_t *i, t_shell *shell)
