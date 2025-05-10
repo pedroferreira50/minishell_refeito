@@ -83,7 +83,7 @@ static void	populate_command(char **args, int *arg_counts, t_command_data *data,
 		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
 		data->arguments[state->command_index] = malloc((arg_counts[state->command_index] + 1) * sizeof(char *));
 		if (data->commands[state->command_index] == NULL || data->arguments[state->command_index] == NULL)
-			return ;
+			return;
 	}
 }
 
@@ -98,39 +98,6 @@ static void	populate_argument(char **args, t_command_data *data, t_parse_state *
 
 static void handle_operator_wrapper(char **args, t_command_data *data, t_parse_state *state, t_shell *shell)
 {
-<<<<<<< HEAD
-	if (args[state->idx.i] == NULL)
-		return;
-	if (ft_strcmp(args[state->idx.i], ">") == 0 || \
-		ft_strcmp(args[state->idx.i], ">>") == 0 || \
-		ft_strcmp(args[state->idx.i], "<") == 0)
-	{
-		if ((ft_strcmp(args[state->idx.i], ">") == 0 && data->output_file) ||
-			(ft_strcmp(args[state->idx.i], "<") == 0 && data->input_file) ||
-			(ft_strcmp(args[state->idx.i], ">>") == 0 && data->output_file))
-		{
-			shell->exit_status = 2;
-			printf("exit before handle_redirect\n");
-			return;
-		}
-		handle_redirect(args, data, &state->idx, shell);
-	}
-	else if (ft_strcmp(args[state->idx.i], "|") == 0)
-	{
-		state->command_index++;
-		state->idx.j = 0;
-	}
-	else if (ft_strcmp(args[state->idx.i], "<<") == 0)
-	{
-		handle_heredoc(args, data, &state->idx, shell);
-	}
-	state->idx.j = 0;
-}
-
-
-
-static void	populate_commands(char **args, int *arg_counts, t_command_data *data, t_shell *shell)
-=======
     if (args[state->idx.i] == NULL)
         return ;
     if (ft_strcmp(args[state->idx.i], "|") == 0)
@@ -148,7 +115,6 @@ static void	populate_commands(char **args, int *arg_counts, t_command_data *data
 }
 
 static void populate_commands(char **args, int *arg_counts, t_command_data *data, t_shell *shell)
->>>>>>> 36e87cb (update)
 {
     t_parse_state	state;
 	size_t			arg_count;
