@@ -75,8 +75,10 @@ int validate_command(char **args, t_shell *shell)
     return (1);
 }
 
-void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell) {
-    if (data->arguments == NULL) { // Only initialize if not already set
+void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
+{
+    if (data->arguments == NULL)
+	{
         data->arguments = malloc(sizeof(char **) * 2);
         if (!data->arguments)
             return;

@@ -7,10 +7,14 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 18:04:51 by scarlos-          #+#    #+#             */
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*   Updated: 2025/05/03 19:45:57 by scarlos-         ###   ########.fr       */
 =======
 /*   Updated: 2025/05/10 04:26:18 by pviegas-         ###   ########.fr       */
 >>>>>>> 36e87cb (update)
+=======
+/*   Updated: 2025/05/10 04:32:59 by pviegas-         ###   ########.fr       */
+>>>>>>> 473616d (update2)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +110,9 @@ void	handle_heredoc(char **args, t_command_data *data,
 void handle_heredoc(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
 >>>>>>> 36e87cb (update)
 {
-    printf("handle_heredoc: args[%ld]=%s, command_index=%d\n", indices->i, args[indices->i], data->num_commands);
     size_t len;
     char *delim;
+
     if (args[indices->i + 1] != NULL)
     {
         free(data->heredoc_delim);
