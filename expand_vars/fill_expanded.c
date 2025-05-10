@@ -90,7 +90,7 @@ void fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell)
 	indices.j = 0;
     if (!dest || !src)
         return;
-    if (quote_type == '\'' || quote_type == '"')
+    if (quote_type == '\'')
         return fill_quotes(dest, src, &indices, quote_type);
     while (src[indices.i])
     {
