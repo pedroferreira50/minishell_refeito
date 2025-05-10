@@ -3,10 +3,10 @@
 
 char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 {
-    char		**expanded;
-    t_indices	idx;
-	size_t		len;
-	char		*tmp;
+    char **expanded;
+    t_indices idx;
+	size_t len;
+	char *tmp;
 
     idx.i = 0;
 	len = 0;
@@ -21,7 +21,7 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
             expanded[idx.i] = ft_strdup(tokens[idx.i]);
         else
         {
-            expanded[idx.i] = expand_variables(tokens[idx.i], quote_types[idx.i], shell);
+			expanded[idx.i] = expand_variables(tokens[idx.i], quote_types[idx.i], shell);
             if (!expanded[idx.i])
                 expanded[idx.i] = ft_strdup(tokens[idx.i]);
             if (quote_types[idx.i] == '"' || quote_types[idx.i] == '\'')
@@ -43,7 +43,7 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 
 int validate_command(char **args, t_shell *shell)
 {
-    struct stat	st; //verify if we can use this
+    struct stat st; //verify if we can use this
 
     if (!args || !args[0])
     {
@@ -75,15 +75,17 @@ int validate_command(char **args, t_shell *shell)
     return (1);
 }
 
-static void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
+void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
 {
-    ft_memset(data, 0, sizeof(t_command_data));
-    data->arguments = malloc(sizeof(char **) * 2);
-    if (!data->arguments)
-        return;
-    data->arguments[0] = args;
-    data->arguments[1] = NULL;
-    data->num_commands = 1;
+    if (data->arguments == NULL)
+	{
+        data->arguments = malloc(sizeof(char **) * 2);
+        if (!data->arguments)
+            return;
+        data->arguments[0] = args;
+        data->arguments[1] = NULL;
+        data->num_commands = 1;
+    }
     parse_input(args, argc, data, shell);
 }
 
