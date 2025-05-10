@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 18:04:51 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 04:26:18 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/10 04:32:59 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_sh
 
 void handle_heredoc(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
 {
-    printf("handle_heredoc: args[%ld]=%s, command_index=%d\n", indices->i, args[indices->i], data->num_commands);
     size_t len;
     char *delim;
+
     if (args[indices->i + 1] != NULL)
     {
         free(data->heredoc_delim);
