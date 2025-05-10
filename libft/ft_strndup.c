@@ -1,34 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_utils.c                                        :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 17:22:19 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/24 17:22:53 by scarlos-         ###   ########.fr       */
+/*   Created: 2025/05/03 14:42:55 by scarlos-          #+#    #+#             */
+/*   Updated: 2025/05/03 16:37:46 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-char **copy_envp(char **envp)
+char	*ft_strndup(const char *src, size_t n)
 {
-	int i;
-	char **new_envp;
+	size_t	len;
+	char	*dest;
+	size_t	i;
 
+	len = 0;
 	i = 0;
-	while (envp[i])
-		i++;
-	new_envp = malloc((i + 1) * sizeof(char *));
-	if (!new_envp)
+	while (len < n && src[len] != '\0')
+		len++;
+	dest = malloc(len + 1);
+	if (!dest)
 		return (NULL);
-	i = 0;
-	while (envp[i])
+	while (i < len)
 	{
-		new_envp[i] = ft_strdup(envp[i]);
+		dest[i] = src[i];
 		i++;
 	}
-	new_envp[i] = NULL;
-	return (new_envp);
+	dest[len] = '\0';
+	return (dest);
 }

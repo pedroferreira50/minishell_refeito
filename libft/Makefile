@@ -41,7 +41,8 @@ File = ft_atoi.c \
 	   ft_strcat.c \
 	   get_next_line.c \
        get_next_line_utils.c \
-	   #ft_strjoin.c
+	   ft_strndup.c \
+	   ft_strjoin.c
 
 
 BONUS= ft_lstadd_back.c \

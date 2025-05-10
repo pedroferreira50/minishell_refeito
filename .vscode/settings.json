@@ -1,6 +1,14 @@
 {
 	"files.associations": {
 		"chrono": "c",
-		"minishell.h": "c"
+		"minishell.h": "c",
+		"stdbool.h": "c",
+		"string.h": "c",
+		"libft.h": "c",
+		"stddef.h": "c",
+		"array": "c",
+		"string": "c",
+		"string_view": "c",
+		"span": "c"
 	}
 }
