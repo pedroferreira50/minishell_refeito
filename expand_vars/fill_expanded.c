@@ -87,6 +87,7 @@ void	fill_expanded(char *dest, const char *src, char quote_type,
 
 	indices.i = 0;
 	indices.j = 0;
+<<<<<<< HEAD
 	if (!dest || !src)
 		return ;
 	if (quote_type == '\'' || quote_type == '"')
@@ -102,4 +103,20 @@ void	fill_expanded(char *dest, const char *src, char quote_type,
 			dest[indices.j++] = src[indices.i++];
 	}
 	dest[indices.j] = '\0';
+=======
+    if (!dest || !src)
+        return;
+    if (quote_type == '\'')
+        return fill_quotes(dest, src, &indices, quote_type);
+    while (src[indices.i])
+    {
+        if (src[indices.i] == '$' && src[indices.i + 1] == '?')
+            fill_exit_status(dest, &indices, shell);
+        else if (src[indices.i] == '$' && (ft_isalpha(src[indices.i + 1]) || src[indices.i + 1] == '_'))
+            fill_var_name(dest, src, &indices, shell);
+        else
+            dest[indices.j++] = src[indices.i++];
+    }
+    dest[indices.j] = '\0';
+>>>>>>> 36e87cb (update)
 }
