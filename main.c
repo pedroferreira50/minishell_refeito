@@ -61,10 +61,11 @@ int	process_input(char *input, t_shell *shell)
 	if (input == NULL)
 		return (0);
 	if (input[0] == '\0')
-	{
-		free(input);
+//	{ this free cause invalid read
+//		printf("%s\n", input);
+//		free(input);
 		return (1);
-	}
+//	}
 	g_signal = 0;
 	shell->exit_status = 0;
 	i = 0;
