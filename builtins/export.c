@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:59:48 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:42:54 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,28 +88,23 @@ int	handle_export_with_value(char *arg, t_shell *shell)
 
 int	handle_export_without_value(char *arg, t_shell *shell)
 {
-	t_var	*var;
+    t_var *var;
 
-	if (!is_valid_var_name(arg))
-		return (handle_invalid_identifier(arg, shell));
-	var = shell->vars;
-	while (var && ft_strcmp(var->name, arg) != 0)
-		var = var->next;
-	if (var)
-	{
-		var->exported = 1;
-		update_env_var(var->name, var->value, shell);
-	}
-	else
-	{
-		ft_putstr_fd("minishell: export: `", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd("': not found\n", 2);
-		shell->exit_status = 1;
-		return (1);
-	}
-	return (0);
+    if (!is_valid_var_name(arg))
+        return (handle_invalid_identifier(arg, shell));
+    var = shell->vars;
+    while (var && ft_strcmp(var->name, arg) != 0)
+        var = var->next;
+    if (var)
+    {
+        var->exported = 1;
+        update_env_var(var->name, var->value, shell);
+    }
+    else
+        update_env_var(arg, "", shell);
+    return (0);
 }
+
 
 int	ft_export(char **args, t_shell *shell)
 {

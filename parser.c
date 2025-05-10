@@ -3,35 +3,35 @@
 
 char *remove_quotes(char *str)
 {
-    char *new_str;
-    int i = 0, j = 0;
-    char quote_char = '\0';
+	char *new_str;
+	int i = 0, j = 0;
+	char quote_char = '\0';
 
-    if (!str)
-        return (NULL);
-
-    new_str = malloc(ft_strlen(str) + 1);
-    if (!new_str)
+	if (!str)
 		return (NULL);
-    while (str[i])
-    {
-        if ((str[i] == '\'' || str[i] == '"') && quote_char == '\0')
-        {
-            quote_char = str[i];
-            i++;
-            continue;
-        }
-        if (str[i] == quote_char && quote_char != '\0')
-        {
-            quote_char = '\0';
-            i++;
-            continue;
-        }
-        new_str[j++] = str[i++];
-    }
 
-    new_str[j] = '\0';
-    return (new_str);
+	new_str = malloc(ft_strlen(str) + 1);
+	if (!new_str)
+		return (NULL);
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '"') && quote_char == '\0')
+		{
+			quote_char = str[i];
+			i++;
+			continue;
+		}
+		if (str[i] == quote_char && quote_char != '\0')
+		{
+			quote_char = '\0';
+			i++;
+			continue;
+		}
+		new_str[j++] = str[i++];
+	}
+
+	new_str[j] = '\0';
+	return (new_str);
 }
 
 

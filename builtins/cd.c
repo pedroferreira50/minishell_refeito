@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 13:19:35 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/10 18:00:59 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,21 @@ static int	handle_cd_error(t_shell *shell, char *old_pwd,
 	return (1);
 }
 
+int handle_cd_too_many_arguments(t_shell *shell)
+{
+	ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+	shell->exit_status = 1;  // Código de erro 1
+	return (1);
+}
+
 int	ft_cd(char **args, int *i, t_shell *shell)
 {
 	char	*path;
 	char	*old_pwd;
 	char	*new_pwd;
 
+	if (args[2] != NULL)
+		return (handle_cd_too_many_arguments(shell));
 	old_pwd = getcwd(NULL, 0);
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
 		gotohome(&path, shell);
