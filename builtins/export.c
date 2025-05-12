@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 17:42:54 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:08:10 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,10 +124,10 @@ int	ft_export(char **args, t_shell *shell)
 			status |= handle_export_with_value(args[i], shell);
 		}
 		else
+		{
 			status |= handle_export_without_value(args[i], shell);
+		}
 		i++;
 	}
-	if (status != 0)
-		shell->exit_status = 1;
 	return (status);
 }

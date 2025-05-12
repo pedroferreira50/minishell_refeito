@@ -126,7 +126,7 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
     if (args == NULL)
     {
         shell->exit_status = 2;
-        return;
+        return ;
     }
     arg_count = count_args(args);
     while (state.idx.i < arg_count && args[state.idx.i] != NULL)
@@ -156,17 +156,17 @@ void	parse_input(char **args, int count, t_command_data *data, t_shell *shell)
 	}
 	ft_memset(arg_counts, 0, sizeof(int) * count);
 	count_commands(args, count, data, arg_counts, shell);
-	if (data->num_commands == 0 || shell->exit_status != 0)
+	if (data->num_commands == 0)
 	{
 		free_command_data(data);
 		free(arg_counts);
-		return;
+		return ;
 	}
 	alloc_commands(data, shell);
 	if (data->commands == NULL || data->arguments == NULL)
 	{
 		free(arg_counts);
-		return;
+		return ;
 	}
 	populate_commands(args, arg_counts, data, shell);
 	i = 0;

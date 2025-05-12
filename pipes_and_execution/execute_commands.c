@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 17:44:30 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:26:32 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,13 @@
 void	finalize_execution(t_exec_state *state, pid_t *pids,
 	t_command_data *data, t_shell *shell)
 {
-	get_shell()->is_save_to_execute = true;
+	int save_exit;
+
+	save_exit = shell->exit_status;
 	wait_commands(pids, data, shell);
+	if(!get_shell()->is_save_to_execute)
+		shell->exit_status = save_exit;
+	get_shell()->is_save_to_execute = true;
 	free_command_data(data);
 	if (state->prev_pipe_read != -1)
 	{
@@ -103,6 +108,7 @@ void	execute_commands(t_command_data *data, t_shell *shell)
 	state.heredoc_fd = -1;
 	state.i = 0;
 	pids = NULL;
+
 	if (!data || !data->commands || data->num_commands == 0)
 		return ((void)(shell->exit_status = 2));
 	parent_builtin(data, &state, shell);

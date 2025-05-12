@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 14:33:37 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:30:20 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	handle_assignment_non_export(char *input, t_parse_result *parsed)
 	free_args(parsed->args, NULL);
 	free(parsed->quote_types);
 }
-
 void	handle_command(char *input, t_shell *shell)
 {
 	t_parse_result	parsed;
@@ -61,13 +60,11 @@ int	process_input(char *input, t_shell *shell)
 	if (input == NULL)
 		return (0);
 	if (input[0] == '\0')
-//	{ this free cause invalid read
-//		printf("%s\n", input);
-//		free(input);
+	{
+		free(input);
 		return (1);
-//	}
+	}
 	g_signal = 0;
-	shell->exit_status = 0;
 	i = 0;
 	while (input[i] && ft_isspace(input[i]))
 		i++;
