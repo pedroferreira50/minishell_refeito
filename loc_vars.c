@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loc_vars.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:57 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/12 11:59:02 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/13 07:18:54 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void	handle_var_assignment(const char *input, t_shell *shell)
 		store_var(name, value, &shell->vars);
 	else
 	{
+		printf("%s\n", name);
 		ft_putstr_fd("Command not found: ", 2);
 		ft_putstr_fd(name, 2);
 		ft_putstr_fd("\n", 2);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/12 13:30:20 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/13 07:43:59 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	handle_assignment_non_export(char *input, t_parse_result *parsed)
 {
-	free(input);
+	if (input != NULL)
+		free(input);
 	free_args(parsed->args, NULL);
 	free(parsed->quote_types);
 }
@@ -27,7 +28,6 @@ void	handle_command(char *input, t_shell *shell)
 	parsed = parse_command(input, shell);
 	if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
 		return (handle_assignment_non_export(input, &parsed), (void)0);
-	free(input);
 	if (!parsed.args)
 		return ;
 	expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
@@ -63,7 +63,7 @@ int	process_input(char *input, t_shell *shell)
 	{
 		free(input);
 		return (1);
-	}
+	}	
 	g_signal = 0;
 	i = 0;
 	while (input[i] && ft_isspace(input[i]))
@@ -77,7 +77,7 @@ int	process_input(char *input, t_shell *shell)
 	return (2);
 }
 
-int	main(int argc, char *argv[], char *envp[])
+int main(int argc, char *argv[], char *envp[])
 {
 	t_shell *shell;
 	char *input;
@@ -87,7 +87,6 @@ int	main(int argc, char *argv[], char *envp[])
 	shell = get_shell();
 	init_shell(shell, envp);
 	rl_catch_signals = 0;
-
 	while (1)
 	{
 		input = readline("minishell> ");
@@ -96,7 +95,12 @@ int	main(int argc, char *argv[], char *envp[])
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break;
 		}
-		handle_command(input, shell);
+		if (input && input[0] != '\0' && process_input(input, shell) == 2)
+		{
+			handle_command(input, shell);
+			if (input && input[0] != '\0')
+				free(input);
+		}
 	}
 	finalize_shell(shell);
 	return (shell->exit_status);
