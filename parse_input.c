@@ -149,11 +149,8 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
     arg_count = count_args(args);
 	while (state.idx.i < arg_count && args[state.idx.i] != NULL)
 	{
-
 		if (is_operator(args[state.idx.i]))
-		{
 			handle_operator_wrapper(args, data, &state, shell);
-		}
 		else
 		{
 			populate_command(args, arg_counts, data, &state);
