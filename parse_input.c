@@ -140,7 +140,7 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
     state.idx.i = 0;
     state.idx.j = 0;
 	arg_count = 0;
-	print_args(args);
+	// print_args(args);
     if (args == NULL)
     {
         shell->exit_status = 2;
