@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 19:09:36 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:54:36 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,4 +259,10 @@ void			free_args(char **args, t_command_data *data);
 void			free_command_data(t_command_data *data);
 void			free_state(t_parse *state);
 
+
+void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell);
+
+
+void print_arguments(char ***arguments);
+void print_args(char **args);
 #endif

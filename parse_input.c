@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+void print_args(char **args)
+{
+    if (args == NULL) {
+        printf("No arguments to print.\n");
+        return;
+    }
+    int i = 0;
+    while (args[i] != NULL)
+	{
+        printf("Arg[%d]: %s\n", i, args[i]);
+        i++;
+    }
+}
 static void	count_commands(char **args, int count, t_command_data *data, int *arg_counts, t_shell *shell)
 {
 	t_indices idx;
@@ -9,11 +22,13 @@ static void	count_commands(char **args, int count, t_command_data *data, int *ar
 	idx.j = 0;
 	command_index = 0;
 	data->num_pipes = 0;
+
 	if (args == NULL)
 	{
 		shell->exit_status = 2;
-		return 	;
+		return;
 	}
+
 	while (idx.i < (size_t)count)
 	{
 		if (args[idx.i] == NULL)
@@ -21,6 +36,7 @@ static void	count_commands(char **args, int count, t_command_data *data, int *ar
 			shell->exit_status = 2;
 			return;
 		}
+
 		if (is_operator(args[idx.i]))
 		{
 			if (idx.i + 1 >= (size_t)count || args[idx.i + 1] == NULL)
@@ -39,12 +55,12 @@ static void	count_commands(char **args, int count, t_command_data *data, int *ar
 				}
 				handle_pipe(data, &command_index, shell);
 				idx.j = 0;
+				idx.i++;// change this to work
 			}
 			else if (ft_strcmp(args[idx.i], "<<") == 0)
 				handle_heredoc(args, data, &idx, shell);
 			else
 				handle_redirect(args, data, &idx, shell);
-			idx.i++;
 		}
 		else
 		{
@@ -61,6 +77,7 @@ static void	count_commands(char **args, int count, t_command_data *data, int *ar
 		data->num_commands = 0;
 	}
 }
+
 
 static void	alloc_commands(t_command_data *data, t_shell *shell)
 {
@@ -83,7 +100,7 @@ static void	populate_command(char **args, int *arg_counts, t_command_data *data,
 		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
 		data->arguments[state->command_index] = malloc((arg_counts[state->command_index] + 1) * sizeof(char *));
 		if (data->commands[state->command_index] == NULL || data->arguments[state->command_index] == NULL)
-			return;
+			return ;
 	}
 }
 
@@ -91,7 +108,7 @@ static void	populate_argument(char **args, t_command_data *data, t_parse_state *
 {
 	data->arguments[state->command_index][state->idx.j] = ft_strdup(args[state->idx.i]);
 	if (data->arguments[state->command_index][state->idx.j] == NULL)
-		return;
+		return ;
 	state->idx.j++;
 	state->idx.i++;
 }
@@ -111,7 +128,7 @@ static void handle_operator_wrapper(char **args, t_command_data *data, t_parse_s
         handle_heredoc(args, data, &state->idx, shell);
     else
         handle_redirect(args, data, &state->idx, shell);
-    state->idx.j = 0;
+    // state->idx.j = 0; //trata o que tem apos < como comando
 }
 
 static void populate_commands(char **args, int *arg_counts, t_command_data *data, t_shell *shell)
@@ -123,24 +140,27 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
     state.idx.i = 0;
     state.idx.j = 0;
 	arg_count = 0;
+	print_args(args);
     if (args == NULL)
     {
         shell->exit_status = 2;
         return ;
     }
     arg_count = count_args(args);
-    while (state.idx.i < arg_count && args[state.idx.i] != NULL)
-    {
-        if (is_operator(args[state.idx.i]))
-            handle_operator_wrapper(args, data, &state, shell);
-        else
-        {
-            populate_command(args, arg_counts, data, &state);
-            populate_argument(args, data, &state);
-        }
-    }
-}
+	while (state.idx.i < arg_count && args[state.idx.i] != NULL)
+	{
 
+		if (is_operator(args[state.idx.i]))
+		{
+			handle_operator_wrapper(args, data, &state, shell);
+		}
+		else
+		{
+			populate_command(args, arg_counts, data, &state);
+			populate_argument(args, data, &state);
+		}
+	}
+}
 void	parse_input(char **args, int count, t_command_data *data, t_shell *shell)
 {
 	int	*arg_counts;
@@ -176,5 +196,6 @@ void	parse_input(char **args, int count, t_command_data *data, t_shell *shell)
 			data->arguments[i][arg_counts[i]] = NULL;
 		i++;
 	}
+
 	free(arg_counts);
 }

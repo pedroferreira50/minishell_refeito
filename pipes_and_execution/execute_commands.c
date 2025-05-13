@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 07:53:34 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/13 15:28:06 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,30 @@ int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 	return (0);
 }
 
+void print_arguments(char ***arguments)
+{
+    int i = 0;
+    int j;
+
+    if (!arguments)
+    {
+        printf("arguments is NULL\n");
+        return;
+    }
+    while (arguments[i])
+    {
+        printf("Command [%d]:\n", i);
+        j = 0;
+        while (arguments[i][j])
+        {
+            printf("  Arg [%d][%d]: %s\n", i, j, arguments[i][j]);
+            j++;
+        }
+        i++;
+    }
+}
+
+
 void	execute_commands(t_command_data *data, t_shell *shell)
 {
 	t_exec_state	state;
@@ -108,7 +132,7 @@ void	execute_commands(t_command_data *data, t_shell *shell)
 	state.heredoc_fd = -1;
 	state.i = 0;
 	pids = NULL;
-
+	// print_arguments(data->arguments);
 	if (!data || !data->commands || data->num_commands == 0)
 		return ((void)(shell->exit_status = 2));
 	parent_builtin(data, &state, shell);

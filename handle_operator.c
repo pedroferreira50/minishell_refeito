@@ -31,7 +31,7 @@ void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_sh
     {
         free(data->output_file);
         data->output_file = ft_strdup(args[indices->i + 1]);
-        if (data->input_file == NULL)
+        if (data->output_file == NULL)
             shell->exit_status = 1;
         data->append_output = 1;
         indices->i += 2;
