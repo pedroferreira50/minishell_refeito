@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:58:37 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 07:23:17 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:45:40 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	execute_command(int *i, t_shell *shell, pid_t *pids,
 	full_path = find_command_path(data->commands[*i], shell);
 	if (full_path == NULL)
 	{
-		ft_putstr_fd("Command not found: ", 2);
 		ft_putstr_fd(data->commands[*i], 2);
+		ft_putstr_fd(": command not found", 2);
 		ft_putstr_fd("\n", 2);
 		shell->exit_status = 127;
 		g_signal = 127;

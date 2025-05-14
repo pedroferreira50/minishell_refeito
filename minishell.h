@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 16:54:36 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:41:39 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,7 @@ t_parse_result	parse_command(const char *cmd, t_shell *shell);
 
 char			**expand_tokens(char **tokens, char *quote_types,
 					t_shell *shell);
+int validate_command(char **args, t_shell *shell);
 
 //free
 void			free_data_commands(char **commands, int num_commands);

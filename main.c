@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 12:37:27 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/14 04:03:06 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,69 @@ void	handle_assignment_non_export(char *input, t_parse_result *parsed)
 	free(parsed->quote_types);
 }
 
-void	handle_command(char *input, t_shell *shell)
+void handle_command(char *input, t_shell *shell)
 {
-	t_parse_result	parsed;
-	t_command_data	data;
-	char			**expanded_args;
+    t_parse_result parsed;
+    t_command_data data;
+    char **expanded_args;
+    char **filtered_args;
+    int i;
+	int j;
+	int count;
 
-	parsed = parse_command(input, shell);
-	if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
-		return (handle_assignment_non_export(input, &parsed), (void)0);
-	if (!parsed.args)
-		return ;
-	expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
-	if (!expanded_args)
+    parsed = parse_command(input, shell);
+    if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
+        return (handle_assignment_non_export(input, &parsed), (void)0);
+    if (!parsed.args)
+        return;
+    expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
+    if (!expanded_args)
+    {
+        free_args(parsed.args, NULL);
+        free(parsed.quote_types);
+        return;
+    }
+    count = 0;
+	i = 0;
+    while (expanded_args[i])
 	{
-		free_args(parsed.args, NULL);
-		free(parsed.quote_types);
-		return ;
+    	if (expanded_args[i][0] != '\0')
+        	count++;
+    	i++;
 	}
-	ft_memset(&data, 0, sizeof(t_command_data));
-	parse_input(expanded_args, count_args(expanded_args), &data, shell);
-	free_args(parsed.args, NULL);
-	free_args(expanded_args, NULL);
-	free(parsed.quote_types);
-	execute_commands(&data, shell);
+    if (count == 0)
+    {
+        free_args(parsed.args, NULL);
+        free_args(expanded_args, NULL);
+        free(parsed.quote_types);
+        return;
+    }
+    filtered_args = malloc(sizeof(char *) * (count + 1));
+    if (!filtered_args)
+    {
+        free_args(parsed.args, NULL);
+        free_args(expanded_args, NULL);
+        free(parsed.quote_types);
+        return;
+    }
+    j = 0;
+    i = 0;
+	while (expanded_args[i])
+	{
+    	if (expanded_args[i][0] != '\0')
+        	filtered_args[j++] = ft_strdup(expanded_args[i]);
+    	i++;
+	}
+    filtered_args[j] = NULL;
+    ft_memset(&data, 0, sizeof(t_command_data));
+    parse_input(filtered_args, count, &data, shell);
+    free_args(parsed.args, NULL);
+    free_args(expanded_args, NULL);
+    free_args(filtered_args, NULL);
+    free(parsed.quote_types);
+    if (validate_command(data.commands, shell) == 0)
+        return;
+    execute_commands(&data, shell);
 }
 
 int	process_input(char *input, t_shell *shell)

@@ -76,36 +76,47 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 
 int validate_command(char **args, t_shell *shell)
 {
-	struct stat st; //verify if we can use this
+    struct stat st;
 
-	if (!args || !args[0])
-	{
-		shell->exit_status = 0;
-		return (0);
-	}
-	if (ft_strcmp(args[0], "~") == 0)
-	{
-		char *home = getenv("HOME");
-		free(args[0]);
-		args[0] = ft_strdup(home ? home : "");
-	}
-	if (ft_strcmp(args[0], ".") == 0 || ft_strcmp(args[0], "..") == 0)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(args[0], 2);
-		ft_putstr_fd(": command not found\n", 2);
-		shell->exit_status = 127;
-		return (0);
-	}
-	if (stat(args[0], &st) == 0 && S_ISDIR(st.st_mode))
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(args[0], 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-		shell->exit_status = 126;
-		return (0);
-	}
-	return (1);
+    if (!args || !args[0])
+    {
+        shell->exit_status = 0;
+        return (0);
+    }
+	//printf("%s\n", args[0]);
+	if (check_builtin(args[0]))
+		return (1);
+    if (strchr(args[0], '/') != NULL)
+    {
+        if (stat(args[0], &st) == 0)
+        {
+            if (S_ISDIR(st.st_mode))
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(args[0], 2);
+                ft_putstr_fd(": Is a directory\n", 2);
+                shell->exit_status = 126;
+                return (0);
+            }
+            if (S_ISREG(st.st_mode) && access(args[0], X_OK) != 0)
+            {
+                ft_putstr_fd("minishell: ", 2);
+                ft_putstr_fd(args[0], 2);
+                ft_putstr_fd(": Permission denied\n", 2);
+                shell->exit_status = 126;
+                return (0);
+            }
+        }
+        else
+        {
+            ft_putstr_fd("minishell: ", 2);
+            ft_putstr_fd(args[0], 2);
+            ft_putstr_fd(": No such file or directory\n", 2);
+            shell->exit_status = 127;
+            return (0);
+        }
+    }
+    return (1);
 }
 
 void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
