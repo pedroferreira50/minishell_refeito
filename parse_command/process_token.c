@@ -6,11 +6,13 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:35:24 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 16:54:55 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:21:57 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+
 
 static void	handle_quotes(t_parse *state)
 {
@@ -19,14 +21,14 @@ static void	handle_quotes(t_parse *state)
 	{
 		state->quote_char = state->cmd[state->i];
 		state->in_quotes = 1;
-		// state->i++; falha em caso de teste''teste
+		//state->i++; //falha em caso de teste''teste
 	}
 	else if (state->cmd[state->i] == state->quote_char && \
 				state->in_quotes && state->brace_count == 0)
 	{
 		state->in_quotes = 0;
 		state->quote_char = '\0';
-		state->i++;
+		// state->i++; //cat < '1.txt''2.txt' -> unclosed quotes
 	}
 }
 

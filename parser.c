@@ -51,13 +51,13 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 	while (tokens[idx.i])
 	{
 		if (idx.i > 0 && ft_strcmp(tokens[idx.i - 1], "<<") == 0)
-		{
 			expanded[idx.i] = ft_strdup(tokens[idx.i]);
-		}
 		else
 		{
 			if (quote_types[idx.i] != '\'')
+			{
 				expanded[idx.i] = expand_variables(tokens[idx.i], quote_types[idx.i], shell);
+			}
 			else
 				expanded[idx.i] = ft_strdup(tokens[idx.i]);
 			if (!expanded[idx.i])

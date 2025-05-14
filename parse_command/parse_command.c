@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:42:33 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 16:47:19 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:28:42 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ static void	parse_loop(t_parse *state, t_shell *shell, t_parse_result *result,
 		}
 		process_token(state, last_was_operator);
 	}
+	// print_args(state->args);
 }
 
 static int	check_initial(const char *cmd, t_shell *shell, t_parse *state)
