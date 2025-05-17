@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:19:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:22:25 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/17 06:11:38 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ void	free_data_arguments(char ***arguments, int num_commands)
 
 void	free_command_data(t_command_data *data)
 {
+	int	i;
+
+	i = 0;
 	if (!data)
 		return ;
 	if (data->commands)
@@ -64,12 +67,20 @@ void	free_command_data(t_command_data *data)
 		free_data_arguments(data->arguments, data->num_commands);
 	if (data->input_file)
 		free(data->input_file);
-	if (data->output_file)
-		free(data->output_file);
 	if (data->heredoc_delim)
 		free(data->heredoc_delim);
+	if (data->out_redirs)
+	{
+		while (i < data->num_out_redirs)
+		{
+			free(data->out_redirs[i].file);
+			i++;
+		}
+		free(data->out_redirs);
+	}
 	data->num_commands = 0;
 	data->num_pipes = 0;
+	data->num_out_redirs = 0;
 }
 
 void	free_args(char **args, t_command_data *data)

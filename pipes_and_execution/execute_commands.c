@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/14 04:04:14 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/17 05:40:05 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,13 @@ void	execute_parent(t_command_data *data, t_exec_state *state,
 
 int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
-	char	*cmd;
+	char *cmd;
 
 	get_shell()->is_save_to_execute = true;
 	if (!data || !data->commands[state->i])
 		return (0);
 	cmd = data->commands[state->i];
-	if (data->num_commands == 1 && check_builtin(cmd) && \
-		!data->input_file && !data->output_file && state->heredoc_fd == -1)
+	if (data->num_commands == 1 && check_builtin(cmd) && !data->input_file && data->num_out_redirs == 0 && state->heredoc_fd == -1)
 	{
 		execute_parent(data, state, shell);
 		return (1);

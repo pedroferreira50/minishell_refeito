@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:27:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:27:42 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/17 06:07:17 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,35 @@ static void	setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 	}
 }
 
-static void	setup_output_redirect(t_command_data *data, int i,
-				int num_commands, t_shell *shell)
+static void setup_output_redirect(t_command_data *data, int i, int num_commands, t_shell *shell)
 {
 	int	fd;
 	int	flags;
-
-	fd = -1;
-	flags = O_WRONLY | O_CREAT;
-	if (i == num_commands - 1 && data->output_file != NULL)
+	int	j;
+	
+	j = 0;
+	if (i == num_commands - 1 && data->num_out_redirs > 0)
 	{
-		if (data->append_output != 0)
-			flags = flags | O_APPEND;
-		else
-			flags = flags | O_TRUNC;
-		fd = open(data->output_file, flags, 0644);
-		if (fd < 0)
+		while (j < data->num_out_redirs)
 		{
-			perror("open output file");
-			shell->exit_status = 1;
-			exit(1);
+			flags = O_WRONLY | O_CREAT;
+			if (data->out_redirs[j].append)
+				flags = flags | O_APPEND;
+			else
+				flags = flags | O_TRUNC;
+			fd = open(data->out_redirs[j].file, flags, 0644);
+			if (fd < 0)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(data->out_redirs[j].file, 2);
+				ft_putstr_fd(": Failed to open file\n", 2);//mensagem de erro nao correta talvez usar errno se nao for proibido
+				shell->exit_status = 1;
+				exit(1);
+			}
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+			j++;
 		}
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
 	}
 }
 

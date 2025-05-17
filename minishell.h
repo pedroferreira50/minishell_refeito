@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 19:41:39 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/17 06:15:28 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,23 @@ typedef struct s_parse_result
 	char	*quote_types;
 }	t_parse_result;
 
+typedef struct s_redirection
+{
+	char	*file;
+	int		append;
+}	t_redirection;
+
 typedef struct s_command_data
 {
-	char	**commands;
-	char	***arguments;
-	char	*heredoc_delim;
-	char	*input_file;
-	char	*output_file;
-	int		append_output;
-	int		num_commands;
-	int		num_pipes;
-	int		heredoc_quoted;
+	char			**commands;
+	char			***arguments;
+	char			*heredoc_delim;
+	char			*input_file;
+	t_redirection	*out_redirs;
+	int				num_out_redirs;
+	int				num_commands;
+	int				num_pipes;
+	int				heredoc_quoted;
 }	t_command_data;
 
 typedef struct s_shell

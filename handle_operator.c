@@ -9,39 +9,44 @@ void	handle_pipe(t_command_data *data, int *command_index, t_shell *shell)
 
 void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
 {
-    const char *token = args[indices->i];
-    if (ft_strcmp(token, "<") == 0 && args[indices->i + 1] != NULL)
-    {
-        free(data->input_file);
-        data->input_file = ft_strdup(args[indices->i + 1]);
-        if (data->input_file == NULL)
-            shell->exit_status = 1;
-        indices->i += 2;
-    }
-    else if (ft_strcmp(token, ">") == 0 && args[indices->i + 1] != NULL)
-    {
-        free(data->output_file);
-        data->output_file = ft_strdup(args[indices->i + 1]);
-        if (data->output_file == NULL)
-            shell->exit_status = 1;
-        data->append_output = 0;
-        indices->i += 2;
-    }
-    else if (ft_strcmp(token, ">>") == 0 && args[indices->i + 1] != NULL)
-    {
-        free(data->output_file);
-        data->output_file = ft_strdup(args[indices->i + 1]);
-        if (data->output_file == NULL)
-            shell->exit_status = 1;
-        data->append_output = 1;
-        indices->i += 2;
-    }
-    else
-    {
-        ft_putstr_fd("minishell: syntax error near redirect\n", 2);
-        shell->exit_status = 2;
-        indices->i++;
-    }
+	const char		*token;
+	t_redirection	*new_redirs;
+
+	token = args[indices->i];
+	if (ft_strcmp(token, "<") == 0 && args[indices->i + 1] != NULL)
+	{
+		free(data->input_file);
+		data->input_file = ft_strdup(args[indices->i + 1]);
+		if (data->input_file == NULL)
+			shell->exit_status = 1;
+		indices->i += 2;
+	}
+	else if ((ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0) && args[indices->i + 1] != NULL)
+	{
+		new_redirs = realloc(data->out_redirs, (data->num_out_redirs + 1) * sizeof(t_redirection));
+		if (new_redirs == NULL)
+		{
+			shell->exit_status = 1;
+			indices->i += 2;
+			return;
+		}
+		data->out_redirs = new_redirs;
+		data->out_redirs[data->num_out_redirs].file = ft_strdup(args[indices->i + 1]);
+		if (ft_strcmp(token, ">>") == 0)
+			data->out_redirs[data->num_out_redirs].append = 1;
+		else
+			data->out_redirs[data->num_out_redirs].append = 0;
+		if (data->out_redirs[data->num_out_redirs].file == NULL)
+			shell->exit_status = 1;
+		data->num_out_redirs++;
+		indices->i += 2;
+	}
+	else
+	{
+		ft_putstr_fd("minishell: syntax error near redirect\n", 2);
+		shell->exit_status = 2;
+		indices->i++;
+	}
 }
 
 void handle_heredoc(char **args, t_command_data *data, t_indices *indices, t_shell *shell)

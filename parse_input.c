@@ -158,41 +158,40 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
 		}
 	}
 }
-void	parse_input(char **args, int count, t_command_data *data, t_shell *shell)
+void parse_input(char **args, int count, t_command_data *data, t_shell *shell)
 {
-	int	*arg_counts;
-	int	i;
+    int *arg_counts;
+    int i;
 
-	arg_counts = NULL;
-	ft_memset(data, 0, sizeof(t_command_data));
-	arg_counts = malloc(count * sizeof(int));
-	if (arg_counts == NULL)
-	{
-		shell->exit_status = 1;
-		return;
-	}
-	ft_memset(arg_counts, 0, sizeof(int) * count);
-	count_commands(args, count, data, arg_counts, shell);
-	if (data->num_commands == 0)
-	{
-		free_command_data(data);
-		free(arg_counts);
-		return ;
-	}
-	alloc_commands(data, shell);
-	if (data->commands == NULL || data->arguments == NULL)
-	{
-		free(arg_counts);
-		return ;
-	}
-	populate_commands(args, arg_counts, data, shell);
-	i = 0;
-	while (i < data->num_commands)
-	{
-		if (data->arguments[i] != NULL)
-			data->arguments[i][arg_counts[i]] = NULL;
-		i++;
-	}
-
-	free(arg_counts);
+    arg_counts = NULL;
+    ft_memset(data, 0, sizeof(t_command_data));
+    arg_counts = malloc(count * sizeof(int));
+    if (arg_counts == NULL)
+    {
+        shell->exit_status = 1;
+        return;
+    }
+    ft_memset(arg_counts, 0, sizeof(int) * count);
+    count_commands(args, count, data, arg_counts, shell);
+    if (data->num_commands == 0)
+    {
+        free_command_data(data);
+        free(arg_counts);
+        return;
+    }
+    alloc_commands(data, shell);
+    if (data->commands == NULL || data->arguments == NULL)
+    {
+        free(arg_counts);
+        return;
+    }
+    populate_commands(args, arg_counts, data, shell);
+    i = 0;
+    while (i < data->num_commands)
+    {
+        if (data->arguments[i] != NULL)
+            data->arguments[i][arg_counts[i]] = NULL;
+        i++;
+    }
+    free(arg_counts);
 }

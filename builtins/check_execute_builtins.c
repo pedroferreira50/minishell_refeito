@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_execute_builtins.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 12:59:00 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/17 06:13:14 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,29 +42,36 @@ int	handle_input_redirection(t_command_data *data, int *i, int original_stdin,
 	return (0);
 }
 
-int	handle_output_redirection(t_command_data *data, int *i,
-		int original_stdout, t_shell *shell)
+int	handle_output_redirection(t_command_data *data, int *i, int original_stdout, t_shell *shell)
 {
 	int	fd_out;
+	int	j;
+	int	flags;
 
-	fd_out = -1;
-	if (*i == data->num_commands - 1 && data->output_file)
+	j = 0;
+	if (*i == data->num_commands - 1 && data->num_out_redirs > 0)
 	{
-		if (data->append_output)
-			fd_out = open(data->output_file, O_WRONLY | O_CREAT | \
-				O_APPEND, 0644);
-		else
-			fd_out = open(data->output_file, O_WRONLY | O_CREAT | \
-				O_TRUNC, 0644);
-		if (fd_out == -1)
+		while (j < data->num_out_redirs)
 		{
-			perror("open output file");
-			shell->exit_status = 1;
-			restore_fds(STDIN_FILENO, original_stdout);
-			return (1);
+			flags = O_WRONLY | O_CREAT;
+			if (data->out_redirs[j].append)
+				flags = flags | O_APPEND;
+			else
+				flags = flags | O_TRUNC;
+			fd_out = open(data->out_redirs[j].file, flags, 0644);
+			if (fd_out == -1)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(data->out_redirs[j].file, 2);
+				ft_putstr_fd(": Failed to open file\n", 2);
+				shell->exit_status = 1;
+				restore_fds(STDIN_FILENO, original_stdout);
+				return (1);
+			}
+			dup2(fd_out, STDOUT_FILENO);
+			close(fd_out);
+			j++;
 		}
-		dup2(fd_out, STDOUT_FILENO);
-		close(fd_out);
 	}
 	return (0);
 }
