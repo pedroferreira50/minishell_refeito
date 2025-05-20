@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:45:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/04/24 18:03:17 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:16:55 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ static char	*get_path_from_env(t_shell *shell)
 
 static char	*check_direct_executable(char *command)
 {
-	char	*result;
+	char		*result = NULL;
+	struct		stat	sb;
 
-	result = NULL;
 	if (access(command, X_OK) == 0)
 	{
-		result = ft_strdup(command);
+		if (stat(command, &sb) == 0 && !S_ISDIR(sb.st_mode))
+			result = ft_strdup(command);
 	}
 	return (result);
 }
