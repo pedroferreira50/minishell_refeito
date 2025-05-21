@@ -14,25 +14,23 @@
 
 static void	setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 {
-	int		fd;
-	int		j;
+	int	fd;
 
-	j = 0;
-	while (j < data->num_in_redirs)
+	fd = -1;
+	if (i == 0 && data->input_file != NULL)
 	{
-		fd = open(data->in_redirs[j].file, O_RDONLY);
+		fd = open(data->input_file, O_RDONLY);
 		if (fd < 0)
 		{
-			ft_putstr_fd("minishell: ", 2);
-			perror(data->in_redirs[j].file);
+			perror("open input file");
 			shell->exit_status = 1;
 			exit(1);
 		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		j++;
 	}
 }
+
 
 
 static int setup_output_redirect(t_command_data *data, int i, int num_commands, t_shell *shell)
