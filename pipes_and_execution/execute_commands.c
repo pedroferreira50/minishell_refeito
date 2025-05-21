@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/17 05:40:05 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:53:05 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,28 +96,63 @@ int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 	return (0);
 }
 
-void print_arguments(char ***arguments)
-{
-    int i = 0;
-    int j;
+// void print_arguments(char ***arguments)
+// {
+//     int i = 0;
+//     int j;
 
-    if (!arguments)
-    {
-        printf("arguments is NULL\n");
-        return;
-    }
-    while (arguments[i])
-    {
-        printf("Command [%d]:\n", i);
-        j = 0;
-        while (arguments[i][j])
-        {
-            printf("  Arg [%d][%d]: %s\n", i, j, arguments[i][j]);
-            j++;
-        }
-        i++;
-    }
+//     if (!arguments)
+//     {
+//         printf("arguments is NULL\n");
+//         return;
+//     }
+//     while (arguments[i])
+//     {
+//         printf("Command [%d]:\n", i);
+//         j = 0;
+//         while (arguments[i][j])
+//         {
+//             printf("  Arg [%d][%d]: %s\n", i, j, arguments[i][j]);
+//             j++;
+//         }
+//         i++;
+//     }
+// }
+void print_arguments(t_command_data *data)
+{
+	int i, j;
+
+	printf("=== Parsed Commands ===\n");
+	for (i = 0; i < data->num_commands; i++)
+	{
+		printf("Command %d:\n", i);
+		if (data->arguments && data->arguments[i])
+		{
+			printf("  Arguments: ");
+			for (j = 0; data->arguments[i][j]; j++)
+				printf("'%s' ", data->arguments[i][j]);
+			printf("\n");
+		}
+		printf("\n");
+	}
+
+	printf("=== Output Redirections (ALL commands) ===\n");
+	for (j = 0; j < data->num_out_redirs; j++)
+	{
+		printf("Redirection %d: file='%s', append=%d\n",
+			j, data->out_redirs[j].file, data->out_redirs[j].append);
+	}
+
+	if (data->input_file)
+		printf("=== Input File: %s ===\n", data->input_file);
+
+	if (data->heredoc_delim)
+		printf("=== Heredoc Delimiter: %s ===\n", data->heredoc_delim);
+
+	printf("===========================\n\n");
 }
+
+
 
 
 void	execute_commands(t_command_data *data, t_shell *shell)
@@ -131,7 +166,7 @@ void	execute_commands(t_command_data *data, t_shell *shell)
 	state.heredoc_fd = -1;
 	state.i = 0;
 	pids = NULL;
-	// print_arguments(data->arguments);
+	// print_arguments(data);
 	if (!data || !data->commands || data->num_commands == 0)
 		return ((void)(shell->exit_status = 2));
 	parent_builtin(data, &state, shell);

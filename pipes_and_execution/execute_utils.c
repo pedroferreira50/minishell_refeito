@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:58:37 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 19:45:40 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:24:54 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	run_pipeline(t_command_data *data, t_exec_state *state,
 	t_shell *shell, pid_t *pids)
 {
 	pid_t	pid;
-
+	
 	if (setup_pipeline(data, state, shell) == -1)
 	{
 		free(pids);

@@ -60,7 +60,10 @@ static void	count_commands(char **args, int count, t_command_data *data, int *ar
 			else if (ft_strcmp(args[idx.i], "<<") == 0)
 				handle_heredoc(args, data, &idx, shell);
 			else
+			{
+				shell->is_counting = 1;
 				handle_redirect(args, data, &idx, shell);
+			}
 		}
 		else
 		{
@@ -127,10 +130,11 @@ static void handle_operator_wrapper(char **args, t_command_data *data, t_parse_s
     if (ft_strcmp(args[state->idx.i], "<<") == 0)
         handle_heredoc(args, data, &state->idx, shell);
     else
+	{
+		shell->is_counting = 0;
         handle_redirect(args, data, &state->idx, shell);
-    // state->idx.j = 0; //trata o que tem apos < como comando
+    }
 }
-
 static void populate_commands(char **args, int *arg_counts, t_command_data *data, t_shell *shell)
 {
     t_parse_state	state;
@@ -140,7 +144,6 @@ static void populate_commands(char **args, int *arg_counts, t_command_data *data
     state.idx.i = 0;
     state.idx.j = 0;
 	arg_count = 0;
-	// print_args(args);
     if (args == NULL)
     {
         shell->exit_status = 2;

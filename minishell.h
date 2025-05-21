@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/17 06:15:28 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:45:27 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_shell
 	char	**envp;
 	t_var	*vars;
 	int		exit_status;
+	int		is_counting;
 	bool	is_save_to_execute;
 }	t_shell;
 
@@ -270,6 +271,6 @@ void			free_state(t_parse *state);
 void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell);
 
 
-void print_arguments(char ***arguments);
+void print_arguments(t_command_data *data);
 void print_args(char **args);
 #endif
