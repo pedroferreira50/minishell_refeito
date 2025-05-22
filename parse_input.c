@@ -95,17 +95,47 @@ static void	alloc_commands(t_command_data *data, t_shell *shell)
 	ft_memset(data->commands, 0, data->num_commands * sizeof(char *));
 	ft_memset(data->arguments, 0, data->num_commands * sizeof(char **));
 }
-
+// static void	populate_command(char **args, int *arg_counts, t_command_data *data, t_parse_state *state)
+// {
+// 	int i;
+// 	if (state->idx.j == 0)
+// 	{
+// 		if (data->input_file)
+// 		{
+// 			free(data->input_file);
+// 			data->input_file = NULL;
+// 		}
+// 		if (data->out_redirs)
+// 		{
+// 			i = 0;
+// 			while (i < data->num_out_redirs)
+// 			{
+// 				if (data->out_redirs[i].file)
+// 					free(data->out_redirs[i].file);
+// 				i++;
+// 			}
+// 			free(data->out_redirs);
+// 			data->out_redirs = NULL;
+// 		}
+// 		data->num_out_redirs = 0;
+// 		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
+// 		data->arguments[state->command_index] = malloc((arg_counts[state->command_index] + 1) * sizeof(char *));
+// 		if (data->commands[state->command_index] == NULL || data->arguments[state->command_index] == NULL)
+// 			return;
+// 	}
+// }
 static void	populate_command(char **args, int *arg_counts, t_command_data *data, t_parse_state *state)
 {
 	if (state->idx.j == 0)
 	{
+		data->num_out_redirs = 0;
 		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
 		data->arguments[state->command_index] = malloc((arg_counts[state->command_index] + 1) * sizeof(char *));
 		if (data->commands[state->command_index] == NULL || data->arguments[state->command_index] == NULL)
-			return ;
+			return;
 	}
 }
+
 
 static void	populate_argument(char **args, t_command_data *data, t_parse_state *state)
 {

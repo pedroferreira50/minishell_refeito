@@ -6,7 +6,7 @@
 /*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 17:53:05 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:08:25 by scarlos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,29 +95,6 @@ int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 	}
 	return (0);
 }
-
-// void print_arguments(char ***arguments)
-// {
-//     int i = 0;
-//     int j;
-
-//     if (!arguments)
-//     {
-//         printf("arguments is NULL\n");
-//         return;
-//     }
-//     while (arguments[i])
-//     {
-//         printf("Command [%d]:\n", i);
-//         j = 0;
-//         while (arguments[i][j])
-//         {
-//             printf("  Arg [%d][%d]: %s\n", i, j, arguments[i][j]);
-//             j++;
-//         }
-//         i++;
-//     }
-// }
 void print_arguments(t_command_data *data)
 {
 	int i, j;
@@ -151,9 +128,6 @@ void print_arguments(t_command_data *data)
 
 	printf("===========================\n\n");
 }
-
-
-
 
 void	execute_commands(t_command_data *data, t_shell *shell)
 {
