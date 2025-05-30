@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_expansion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:12 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/12 12:49:23 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:24:50 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ size_t calc_var_size(const char *arg, t_indices *indices, t_shell *shell)
 
 	if (arg[indices->i + 1] == '?')
 		return handle_exit_status(NULL, 0, &indices->i, shell);
-	indices->i++; // skip the $
+	indices->i++;
 	start = indices->i;
-	// if the first character is not valid, it's not a variable
 	if (!isalpha(arg[start]) && arg[start] != '_')
 		return (1);
 	while (isalnum(arg[indices->i]) || arg[indices->i] == '_')

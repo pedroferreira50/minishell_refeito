@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 17:45:27 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 05:51:29 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <string.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft/libft.h"
@@ -53,9 +54,9 @@ typedef struct s_command_data
 	char			**commands;
 	char			***arguments;
 	char			*heredoc_delim;
-	char			*input_file;
-	t_redirection	*out_redirs;
-	int				num_out_redirs;
+	char			**input_files;
+	t_redirection	**out_redirs;
+	int				*num_out_redirs;
 	int				num_commands;
 	int				num_pipes;
 	int				heredoc_quoted;
@@ -118,7 +119,7 @@ void			setup_signals(void);
 void			handle_pipe(t_command_data *data, int *command_index,
 					t_shell *shell);
 void			handle_redirect(char **args, t_command_data *data,
-					t_indices *indices, t_shell *shell);
+					t_indices *indices, t_shell *shell, int cmd_index);
 void			handle_heredoc(char **args, t_command_data *data,
 					t_indices *indices, t_shell *shell);
 void			handle_pipe_increment(t_command_data *data,
@@ -268,7 +269,6 @@ void			free_command_data(t_command_data *data);
 void			free_state(t_parse *state);
 
 
-void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell);
 
 
 void print_arguments(t_command_data *data);

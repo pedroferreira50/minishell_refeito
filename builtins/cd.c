@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 18:00:59 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:25:33 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	handle_cd_error(t_shell *shell, char *old_pwd,
 int handle_cd_too_many_arguments(t_shell *shell)
 {
 	ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-	shell->exit_status = 1;  // Código de erro 1
+	shell->exit_status = 1;
 	return (1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_execute_builtins.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 11:35:24 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 05:49:10 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int	handle_input_redirection(t_command_data *data, int *i, int original_stdin,
 	int	fd_in;
 
 	fd_in = -1;
-	if (*i == 0 && data->input_file)
+	if (data->input_files && data->input_files[*i])
 	{
-		fd_in = open(data->input_file, O_RDONLY);
+		fd_in = open(data->input_files[*i], O_RDONLY);
 		if (fd_in == -1)
 		{
 			perror("open input file");
@@ -49,20 +49,20 @@ int	handle_output_redirection(t_command_data *data, int *i, int original_stdout,
 	int	flags;
 
 	j = 0;
-	if (*i == data->num_commands - 1 && data->num_out_redirs > 0)
+	if (data->num_out_redirs && data->num_out_redirs[*i] > 0)
 	{
-		while (j < data->num_out_redirs)
+		while (j < data->num_out_redirs[*i])
 		{
 			flags = O_WRONLY | O_CREAT;
-			if (data->out_redirs[j].append)
+			if (data->out_redirs[*i][j].append)
 				flags = flags | O_APPEND;
 			else
 				flags = flags | O_TRUNC;
-			fd_out = open(data->out_redirs[j].file, flags, 0644);
+			fd_out = open(data->out_redirs[*i][j].file, flags, 0644);
 			if (fd_out == -1)
 			{
 				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(data->out_redirs[j].file, 2);
+				ft_putstr_fd(data->out_redirs[*i][j].file, 2);
 				ft_putstr_fd(": Failed to open file\n", 2);
 				shell->exit_status = 1;
 				restore_fds(STDIN_FILENO, original_stdout);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:40:55 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:41:20 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:24:20 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	setup_heredoc(const char *delimiter, t_shell *shell, int suppress_expansion)
 {
 	int		pipefd[2];
 	char	*line;
+	size_t	len;
 
 	line = NULL;
 	if (delimiter == NULL || init_heredoc_pipe(pipefd) == -1)
@@ -85,6 +86,11 @@ int	setup_heredoc(const char *delimiter, t_shell *shell, int suppress_expansion)
 			close(pipefd[1]);
 			return (-1);
 		}
+		
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);

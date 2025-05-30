@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int is_operator(const char *token)
+int	is_operator(const char *token)
 {
 	if (token == NULL)
 		return (0);

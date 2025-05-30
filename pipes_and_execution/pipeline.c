@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:27:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 11:47:27 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:23:23 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@ static void	setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 	int	fd;
 
 	fd = -1;
-	if (i == 0 && data->input_file != NULL)
+	if (data->input_files && data->input_files[i] != NULL)
 	{
-		fd = open(data->input_file, O_RDONLY);
+		fd = open(data->input_files[i], O_RDONLY);
 		if (fd < 0)
 		{
-			perror("open input file");
 			shell->exit_status = 1;
 			exit(1);
 		}
@@ -33,28 +32,26 @@ static void	setup_input_redirect(t_command_data *data, int i, t_shell *shell)
 
 
 
-static int setup_output_redirect(t_command_data *data, int i, int num_commands, t_shell *shell)
+static int setup_output_redirect(t_command_data *data, int i, t_shell *shell)
 {
 	int	fd;
 	int	flags;
 	int	j;
 
 	j = 0;
-	if (i == num_commands - 1 && data->num_out_redirs > 0)
+	if (data->num_out_redirs && data->num_out_redirs[i] > 0)
 	{
-		while (j < data->num_out_redirs)
+		while (j < data->num_out_redirs[i])
 		{
 			flags = O_WRONLY | O_CREAT;
-			if (data->out_redirs[j].append)
+			if (data->out_redirs[i][j].append)
 				flags |= O_APPEND;
 			else
 				flags |= O_TRUNC;
 
-			fd = open(data->out_redirs[j].file, flags, 0644);
+			fd = open(data->out_redirs[i][j].file, flags, 0644);
 			if (fd < 0)
 			{
-				ft_putstr_fd("minishell: ", 2);
-				perror(data->out_redirs[j].file);
 				shell->exit_status = 1;
 				return (-1);
 			}
@@ -67,7 +64,7 @@ static int setup_output_redirect(t_command_data *data, int i, int num_commands, 
 }
 
 void	setup_pipes_and_redirections(t_command_data *data, t_exec_state *state,
-			int num_commands, t_shell *shell)
+		int num_commands, t_shell *shell)
 {
 	if (state->i > 0)
 	{
@@ -79,7 +76,7 @@ void	setup_pipes_and_redirections(t_command_data *data, t_exec_state *state,
 	{
 		dup2(state->pipefd[1], STDOUT_FILENO);
 	}
-	if (setup_output_redirect(data, state->i, num_commands, shell) < 0)
+	if (setup_output_redirect(data, state->i, shell) < 0)
 		exit(shell->exit_status);
 }
 

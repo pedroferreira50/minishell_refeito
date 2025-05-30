@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:03:27 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 17:13:38 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:24:35 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,10 @@ void	fork_child(t_command_data *data, t_exec_state *state,
 		exit(shell->exit_status);
 	}
 	if (!has_builtin)
+	{
 		execute_command(&state->i, shell, pids, data);
+		exit(1);
+	}
 	free_command_data(data);
 	exit(1);
 }

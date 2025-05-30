@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/22 13:08:25 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:33:20 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,13 @@
 void	finalize_execution(t_exec_state *state, pid_t *pids,
 	t_command_data *data, t_shell *shell)
 {
-	int save_exit;
+	int	save_exit;
 
 	save_exit = shell->exit_status;
 	wait_commands(pids, data, shell);
-	if(!get_shell()->is_save_to_execute)
+	if (!get_shell()->is_save_to_execute)
 		shell->exit_status = save_exit;
 	get_shell()->is_save_to_execute = true;
-	free_command_data(data);
 	if (state->prev_pipe_read != -1)
 	{
 		close(state->prev_pipe_read);
@@ -82,50 +81,66 @@ void	execute_parent(t_command_data *data, t_exec_state *state,
 
 int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 {
-	char *cmd;
+	char	*cmd;
 
 	get_shell()->is_save_to_execute = true;
 	if (!data || !data->commands[state->i])
 		return (0);
 	cmd = data->commands[state->i];
-	if (data->num_commands == 1 && check_builtin(cmd) && !data->input_file && data->num_out_redirs == 0 && state->heredoc_fd == -1)
+	if (data->num_commands == 1 && check_builtin(cmd)
+		&& (!data->input_files || !data->input_files[state->i])
+		&& (!data->num_out_redirs || data->num_out_redirs[state->i] == 0)
+		&& state->heredoc_fd == -1)
 	{
 		execute_parent(data, state, shell);
 		return (1);
 	}
 	return (0);
 }
-void print_arguments(t_command_data *data)
+
+void	print_arguments(t_command_data *data)
 {
-	int i, j;
+	int	i;
+	int	j;
+	int	k;
 
 	printf("=== Parsed Commands ===\n");
-	for (i = 0; i < data->num_commands; i++)
+	i = 0;
+	while (i < data->num_commands)
 	{
 		printf("Command %d:\n", i);
 		if (data->arguments && data->arguments[i])
 		{
 			printf("  Arguments: ");
-			for (j = 0; data->arguments[i][j]; j++)
+			j = 0;
+			while (data->arguments[i][j])
+			{
 				printf("'%s' ", data->arguments[i][j]);
+				j++;
+			}
+			printf("\n");
+		}
+		if (data->input_files && data->input_files[i])
+			printf("  Input File: %s\n", data->input_files[i]);
+		if (data->num_out_redirs && data->num_out_redirs[i] > 0)
+		{
+			printf("  Output Redirections: ");
+			k = 0;
+			while (k < data->num_out_redirs[i])
+			{
+				if (data->out_redirs[i][k].append)
+					printf("'%s'%s ", data->out_redirs[i][k].file, "(append)");
+				else
+					printf("'%s'%s ", data->out_redirs[i][k].file, "");
+				k++;
+			}
 			printf("\n");
 		}
 		printf("\n");
+		i++;
 	}
-
-	printf("=== Output Redirections (ALL commands) ===\n");
-	for (j = 0; j < data->num_out_redirs; j++)
-	{
-		printf("Redirection %d: file='%s', append=%d\n",
-			j, data->out_redirs[j].file, data->out_redirs[j].append);
-	}
-
-	if (data->input_file)
-		printf("=== Input File: %s ===\n", data->input_file);
-
 	if (data->heredoc_delim)
 		printf("=== Heredoc Delimiter: %s ===\n", data->heredoc_delim);
-
 	printf("===========================\n\n");
 }
 
@@ -140,7 +155,6 @@ void	execute_commands(t_command_data *data, t_shell *shell)
 	state.heredoc_fd = -1;
 	state.i = 0;
 	pids = NULL;
-	// print_arguments(data);
 	if (!data || !data->commands || data->num_commands == 0)
 		return ((void)(shell->exit_status = 2));
 	parent_builtin(data, &state, shell);

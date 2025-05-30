@@ -1,46 +1,48 @@
 #include "minishell.h"
 #include <sys/stat.h>
 
-char *remove_quotes(char *str)
+char	*remove_quotes(char *str)
 {
-	char *new_str;
-	int i = 0, j = 0;
-	char quote_char = '\0';
+	char	*new_str;
+	int		i;
+	int		j;
+	char	quote_char;
 
 	if (!str)
 		return (NULL);
-
 	new_str = malloc(ft_strlen(str) + 1);
 	if (!new_str)
 		return (NULL);
+	i = 0;
+	j = 0;
+	quote_char = '\0';
 	while (str[i])
 	{
 		if ((str[i] == '\'' || str[i] == '"') && quote_char == '\0')
 		{
 			quote_char = str[i];
 			i++;
-			continue;
+			continue ;
 		}
 		if (str[i] == quote_char && quote_char != '\0')
 		{
 			quote_char = '\0';
 			i++;
-			continue;
+			continue ;
 		}
 		new_str[j++] = str[i++];
 	}
-
 	new_str[j] = '\0';
 	return (new_str);
 }
 
 
 
-char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
+char	**expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 {
-	char **expanded;
-	t_indices idx;
-	char *tmp;
+	char		**expanded;
+	t_indices	idx;
+	char		*tmp;
 
 	idx.i = 0;
 	if (!tokens || !tokens[0])
@@ -56,7 +58,8 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 		{
 			if (quote_types[idx.i] != '\'')
 			{
-				expanded[idx.i] = expand_variables(tokens[idx.i], quote_types[idx.i], shell);
+				expanded[idx.i] = expand_variables(tokens[idx.i],
+					quote_types[idx.i], shell);
 			}
 			else
 				expanded[idx.i] = ft_strdup(tokens[idx.i]);
@@ -74,58 +77,58 @@ char **expand_tokens(char **tokens, char *quote_types, t_shell *shell)
 
 
 
-int validate_command(char **args, t_shell *shell)
+int	validate_command(char **args, t_shell *shell)
 {
-    struct stat st;
+	struct stat	st;
 
-    if (!args || !args[0])
-    {
-        shell->exit_status = 0;
-        return (0);
-    }
-	//printf("%s\n", args[0]);
+	if (!args || !args[0])
+	{
+		shell->exit_status = 0;
+		return (0);
+	}
 	if (check_builtin(args[0]))
 		return (1);
-    if (strchr(args[0], '/') != NULL)
-    {
-        if (stat(args[0], &st) == 0)
-        {
-            if (S_ISDIR(st.st_mode))
-            {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(args[0], 2);
-                ft_putstr_fd(": Is a directory\n", 2);
-                shell->exit_status = 126;
-                return (0);
-            }
-            if (S_ISREG(st.st_mode) && access(args[0], X_OK) != 0)
-            {
-                ft_putstr_fd("minishell: ", 2);
-                ft_putstr_fd(args[0], 2);
-                ft_putstr_fd(": Permission denied\n", 2);
-                shell->exit_status = 126;
-                return (0);
-            }
-        }
-        else
-        {
-            ft_putstr_fd("minishell: ", 2);
-            ft_putstr_fd(args[0], 2);
-            ft_putstr_fd(": No such file or directory\n", 2);
-            shell->exit_status = 127;
-            return (0);
-        }
-    }
-    return (1);
+	if (strchr(args[0], '/') != NULL)
+	{
+		if (stat(args[0], &st) == 0)
+		{
+			if (S_ISDIR(st.st_mode))
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(args[0], 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+				shell->exit_status = 126;
+				return (0);
+			}
+			if (S_ISREG(st.st_mode) && access(args[0], X_OK) != 0)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(args[0], 2);
+				ft_putstr_fd(": Permission denied\n", 2);
+				shell->exit_status = 126;
+				return (0);
+			}
+		}
+		else
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(args[0], 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			shell->exit_status = 127;
+			return (0);
+		}
+	}
+	return (1);
 }
 
-void build_command_data(char **args, int argc, t_command_data *data, t_shell *shell)
+void	build_command_data(char **args, int argc, t_command_data *data,
+	t_shell *shell)
 {
 	if (data->arguments == NULL)
 	{
 		data->arguments = malloc(sizeof(char **) * 2);
 		if (!data->arguments)
-			return;
+			return ;
 		data->arguments[0] = args;
 		data->arguments[1] = NULL;
 		data->num_commands = 1;
@@ -133,7 +136,7 @@ void build_command_data(char **args, int argc, t_command_data *data, t_shell *sh
 	parse_input(args, argc, data, shell);
 }
 
-static void execute_and_free(t_command_data *data, t_shell *shell)
+static void	execute_and_free(t_command_data *data, t_shell *shell)
 {
 	if (data->arguments != NULL)
 	{
@@ -142,7 +145,7 @@ static void execute_and_free(t_command_data *data, t_shell *shell)
 	}
 }
 
-void expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
+void	expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
 {
 	char			**expanded;
 	t_command_data	data;
@@ -150,18 +153,18 @@ void expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
 	if (!tokens || !tokens[0])
 	{
 		shell->exit_status = 0;
-		return;
+		return ;
 	}
 	expanded = expand_tokens(tokens, quote_types, shell);
 	if (!expanded)
 	{
 		shell->exit_status = 1;
-		return;
+		return ;
 	}
 	if (!validate_command(expanded, shell))
 	{
 		free_args(expanded, NULL);
-		return;
+		return ;
 	}
 	build_command_data(expanded, count_args(expanded), &data, shell);
 	execute_and_free(&data, shell);

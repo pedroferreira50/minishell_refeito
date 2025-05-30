@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:19:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/17 06:11:38 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/30 05:38:58 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	free_data_arguments(char ***arguments, int num_commands)
 void	free_command_data(t_command_data *data)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	if (!data)
@@ -65,22 +66,41 @@ void	free_command_data(t_command_data *data)
 		free_data_commands(data->commands, data->num_commands);
 	if (data->arguments)
 		free_data_arguments(data->arguments, data->num_commands);
-	if (data->input_file)
-		free(data->input_file);
+	if (data->input_files)
+	{
+		while (i < data->num_commands)
+		{
+			if (data->input_files[i])
+				free(data->input_files[i]);
+			i++;
+		}
+		free(data->input_files);
+	}
 	if (data->heredoc_delim)
 		free(data->heredoc_delim);
-	if (data->out_redirs)
+	if (data->out_redirs && data->num_out_redirs)
 	{
-		while (i < data->num_out_redirs)
+		i = 0;
+		while (i < data->num_commands)
 		{
-			free(data->out_redirs[i].file);
+			if (data->out_redirs[i])
+			{
+				j = 0;
+				while (j < data->num_out_redirs[i])
+				{
+					if (data->out_redirs[i][j].file)
+						free(data->out_redirs[i][j].file);
+					j++;
+				}
+				free(data->out_redirs[i]);
+			}
 			i++;
 		}
 		free(data->out_redirs);
+		free(data->num_out_redirs);
 	}
 	data->num_commands = 0;
 	data->num_pipes = 0;
-	data->num_out_redirs = 0;
 }
 
 void	free_args(char **args, t_command_data *data)

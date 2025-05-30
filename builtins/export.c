@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/13 20:18:44 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:36:33 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,21 @@ int	handle_export_with_value(char *arg, t_shell *shell)
 
 int	handle_export_without_value(char *arg, t_shell *shell)
 {
-    t_var *var;
+	t_var	*var;
 
-    if (!is_valid_var_name(arg))
-        return (handle_invalid_identifier(arg, shell));
-    var = shell->vars;
-    while (var && ft_strcmp(var->name, arg) != 0)
-        var = var->next;
-    if (var)
-    {
-        var->exported = 1;
-        update_env_var(var->name, var->value, shell);
-    }
-    else
-        update_env_var(arg, "", shell);
-    return (0);
+	if (!is_valid_var_name(arg))
+		return (handle_invalid_identifier(arg, shell));
+	var = shell->vars;
+	while (var && ft_strcmp(var->name, arg) != 0)
+		var = var->next;
+	if (var)
+	{
+		var->exported = 1;
+		update_env_var(var->name, var->value, shell);
+	}
+	else
+		update_env_var(arg, "", shell);
+	return (0);
 }
 
 

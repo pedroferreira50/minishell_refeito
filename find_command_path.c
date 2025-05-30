@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_command_path.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:45:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/20 11:16:55 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:28:43 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ static char	*get_path_from_env(t_shell *shell)
 
 static char	*check_direct_executable(char *command)
 {
-	char		*result = NULL;
-	struct		stat	sb;
+	char		*result;
+	struct stat	sb;
 
+	result = NULL;
 	if (access(command, X_OK) == 0)
 	{
 		if (stat(command, &sb) == 0 && !S_ISDIR(sb.st_mode))

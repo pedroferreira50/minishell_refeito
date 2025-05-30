@@ -7,45 +7,92 @@ void	handle_pipe(t_command_data *data, int *command_index, t_shell *shell)
 	shell->exit_status = 0;
 }
 
-void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
+void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
+	t_shell *shell, int cmd_index)
 {
-	const char *token = args[indices->i];
+	const char		*token;
+	int				fd;
+	int				flags;
+	t_redirection	*new_redirs;
 
+	token = args[indices->i];
 	if (token == NULL || args[indices->i + 1] == NULL)
 	{
 		ft_putstr_fd("minishell: syntax error near redirect\n", 2);
 		shell->exit_status = 2;
 		indices->i++;
-		return;
+		return ;
 	}
 	if (ft_strcmp(token, "<") == 0)
 	{
 		if (!shell->is_counting)
 		{
-			free(data->input_file);
-			data->input_file = ft_strdup(args[indices->i + 1]);
-			if (data->input_file == NULL)
-				shell->exit_status = 1;
+			if (shell->exit_status == 0)
+			{
+				fd = open(args[indices->i + 1], O_RDONLY);
+				if (fd < 0)
+				{
+					ft_putstr_fd("minishell: ", 2);
+					perror(args[indices->i + 1]);
+					shell->exit_status = 1;
+				}
+				else
+				{
+					close(fd);
+				}
+			}
+			if (data->input_files)
+			{
+				free(data->input_files[cmd_index]);
+				data->input_files[cmd_index] = ft_strdup(args[indices->i + 1]);
+				if (data->input_files[cmd_index] == NULL)
+					shell->exit_status = 1;
+			}
 		}
 		indices->i += 2;
 	}
 	else if (ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0)
 	{
-		if (!shell->is_counting)
+		if (!shell->is_counting && data->out_redirs && data->num_out_redirs)
 		{
-			t_redirection *new_redirs = realloc(data->out_redirs, (data->num_out_redirs + 1) * sizeof(t_redirection));
+			if (shell->exit_status == 0)
+			{
+				flags = O_WRONLY | O_CREAT;
+				if (ft_strcmp(token, ">>") == 0)
+					flags |= O_APPEND;
+				else
+					flags |= O_TRUNC;
+				fd = open(args[indices->i + 1], flags, 0644);
+				if (fd < 0)
+				{
+					ft_putstr_fd("minishell: ", 2);
+					perror(args[indices->i + 1]);
+					shell->exit_status = 1;
+				}
+				else
+				{
+					close(fd);
+				}
+			}
+			new_redirs = realloc(data->out_redirs[cmd_index],
+				(data->num_out_redirs[cmd_index] + 1) * sizeof(t_redirection));
 			if (new_redirs == NULL)
 			{
 				shell->exit_status = 1;
 				indices->i += 2;
-				return;
+				return ;
 			}
-			data->out_redirs = new_redirs;
-			data->out_redirs[data->num_out_redirs].file = ft_strdup(args[indices->i + 1]);
-			data->out_redirs[data->num_out_redirs].append = (ft_strcmp(token, ">>") == 0) ? 1 : 0;
-			if (data->out_redirs[data->num_out_redirs].file == NULL)
+			data->out_redirs[cmd_index] = new_redirs;
+			data->out_redirs[cmd_index][data->num_out_redirs[cmd_index]].file
+				= ft_strdup(args[indices->i + 1]);
+			if (ft_strcmp(token, ">>") == 0)
+				data->out_redirs[cmd_index][data->num_out_redirs[cmd_index]].append = 1;
+			else
+				data->out_redirs[cmd_index][data->num_out_redirs[cmd_index]].append = 0;
+			if (data->out_redirs[cmd_index][data->num_out_redirs[cmd_index]].file
+				== NULL)
 				shell->exit_status = 1;
-			data->num_out_redirs++;
+			data->num_out_redirs[cmd_index]++;
 		}
 		indices->i += 2;
 	}
@@ -58,34 +105,37 @@ void handle_redirect(char **args, t_command_data *data, t_indices *indices, t_sh
 }
 
 
-void handle_heredoc(char **args, t_command_data *data, t_indices *indices, t_shell *shell)
+void	handle_heredoc(char **args, t_command_data *data, t_indices *indices,
+	t_shell *shell)
 {
-    size_t len;
-    char *delim;
+	size_t	len;
+	char	*delim;
 
-    if (args[indices->i + 1] != NULL)
-    {
-        free(data->heredoc_delim);
-        delim = args[indices->i + 1];
-        len = ft_strlen(delim);
-        if (len >= 2 && (delim[0] == '"' || delim[0] == '\'') && delim[len - 1] == delim[0])
-        {
-            data->heredoc_delim = ft_strndup(delim + 1, len - 2);
-            data->heredoc_quoted = 1;
-        }
-        else
-        {
-            data->heredoc_delim = ft_strdup(delim);
-            data->heredoc_quoted = 0;
-        }
-        if (data->heredoc_delim == NULL)
-            shell->exit_status = 1;
-        indices->i += 2;
-    }
-    else
-    {
-        ft_putstr_fd("minishell: syntax error: no delimiter after '<<'\n", 2);
-        shell->exit_status = 2;
-        indices->i++;
-    }
+	if (args[indices->i + 1] != NULL)
+	{
+		if (data->heredoc_delim)
+			free(data->heredoc_delim);
+		delim = args[indices->i + 1];
+		len = ft_strlen(delim);
+		if (len >= 2 && (delim[0] == '"' || delim[0] == '\'')
+			&& delim[len - 1] == delim[0])
+		{
+			data->heredoc_delim = ft_strndup(delim + 1, len - 2);
+			data->heredoc_quoted = 1;
+		}
+		else
+		{
+			data->heredoc_delim = ft_strdup(delim);
+			data->heredoc_quoted = 0;
+		}
+		if (data->heredoc_delim == NULL)
+			shell->exit_status = 1;
+		indices->i += 2;
+	}
+	else
+	{
+		ft_putstr_fd("minishell: syntax error: no delimiter after '<<'\n", 2);
+		shell->exit_status = 2;
+		indices->i++;
+	}
 }

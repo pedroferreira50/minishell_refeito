@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 14:58:37 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/21 17:24:54 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/05/30 07:34:48 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void	execute_command(int *i, t_shell *shell, pid_t *pids,
 	execve(full_path, data->arguments[*i], shell->envp);
 	perror("execve");
 	free(full_path);
+	free_command_data(data);
+	free(pids);
+	finalize_shell(shell);
 	exit(shell->exit_status);
 }
 
@@ -64,7 +67,7 @@ void	run_pipeline(t_command_data *data, t_exec_state *state,
 	t_shell *shell, pid_t *pids)
 {
 	pid_t	pid;
-	
+
 	if (setup_pipeline(data, state, shell) == -1)
 	{
 		free(pids);
