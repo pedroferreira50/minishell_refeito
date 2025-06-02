@@ -6,12 +6,13 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:25:33 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 03:41:49 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/*
 static int	ft_set_env(char **envp, const char *name, const char *value)
 {
 	size_t	name_l;
@@ -40,57 +41,105 @@ static int	ft_set_env(char **envp, const char *name, const char *value)
 	}
 	return (-1);
 }
+*/
+
+static char	*get_env_value(char **envp, const char *name)
+{
+	size_t	name_len;
+	int		i;
+
+	if (!envp || !name)
+		return (NULL);
+	name_len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], name, name_len) == 0 && envp[i][name_len] == '=')
+			return (envp[i] + name_len + 1);
+		i++;
+	}
+	return (NULL);
+}
 
 static int	gotohome(char **path, t_shell *shell)
 {
-	*path = getenv("HOME");
+	*path = get_env_value(shell->envp, "HOME");
 	if (*path == NULL)
 	{
-		perror("cd: HOME not set\n");
+		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 		shell->exit_status = 1;
 		return (1);
 	}
 	return (0);
 }
 
-static int	handle_cd_error(t_shell *shell, char *old_pwd,
-				const char *error_msg)
+static int	goto_oldpwd(char **path, t_shell *shell)
 {
-	if (error_msg)
-		perror(error_msg);
-	shell->exit_status = 1;
+	*path = get_env_value(shell->envp, "OLDPWD");
+	if (*path == NULL)
+	{
+		ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+		shell->exit_status = 1;  // Bash returns 1 when OLDPWD not set
+		return (1);
+	}
+	printf("%s\n", *path);
+	return (0);
+}
+
+static int	handle_cd_error(t_shell *shell, char *old_pwd, char *path)
+{
+	ft_putstr_fd("minishell: cd: ", 2);
+	ft_putstr_fd(path, 2);
+	ft_putstr_fd(": No such file or directory\n", 2);
+	shell->exit_status = 1;  // Bash returns 1 for invalid directories
 	free(old_pwd);
 	return (1);
 }
 
-int handle_cd_too_many_arguments(t_shell *shell)
+static int	handle_cd_too_many_arguments(t_shell *shell)
 {
 	ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-	shell->exit_status = 1;
+	shell->exit_status = 1;  // Bash returns 1 for too many arguments
 	return (1);
 }
+
 
 int	ft_cd(char **args, int *i, t_shell *shell)
 {
 	char	*path;
 	char	*old_pwd;
 	char	*new_pwd;
+	int		arg_count;
 
-	if (args[2] != NULL)
+	arg_count = count_args(args);
+	if (arg_count > 2)
 		return (handle_cd_too_many_arguments(shell));
 	old_pwd = getcwd(NULL, 0);
 	if (args[1] == NULL || strcmp(args[1], "~") == 0)
-		gotohome(&path, shell);
+	{
+		if (gotohome(&path, shell) != 0)
+			return (1);
+	}
+	else if (strcmp(args[1], "-") == 0)
+	{
+		if (goto_oldpwd(&path, shell) != 0)
+			return (1);
+	}
 	else
 		path = args[1];
 	if (chdir(path) != 0)
-		return (handle_cd_error(shell, old_pwd, "cd"));
+		return (handle_cd_error(shell, old_pwd, path));
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
-		return (handle_cd_error(shell, old_pwd, "getcwd"));
+	{
+		ft_putstr_fd("minishell: cd: getcwd failed\n", 2);
+		shell->exit_status = 1;
+		free(old_pwd);
+		return (1);
+	}
 	if (old_pwd)
-		ft_set_env(shell->envp, "OLDPWD", old_pwd);
-	ft_set_env(shell->envp, "PWD", new_pwd);
+		export_var("OLDPWD", old_pwd, shell);
+	export_var("PWD", new_pwd, shell);
 	free(old_pwd);
 	free(new_pwd);
 	if (i)

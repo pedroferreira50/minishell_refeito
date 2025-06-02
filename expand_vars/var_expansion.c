@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:12 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:24:50 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/01 05:13:23 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ size_t calc_var_size(const char *arg, t_indices *indices, t_shell *shell)
 	char	*var_name;
 	char	*var_value;
 
+	if (!arg || !indices || !shell)
+		return (0);
 	if (arg[indices->i + 1] == '?')
 		return handle_exit_status(NULL, 0, &indices->i, shell);
 	indices->i++;
@@ -27,6 +29,8 @@ size_t calc_var_size(const char *arg, t_indices *indices, t_shell *shell)
 		return (1);
 	while (isalnum(arg[indices->i]) || arg[indices->i] == '_')
 		indices->i++;
+	if (indices->i == start)
+		return (1);
 	var_name = ft_strndup(&arg[start], indices->i - start);
 	if (!var_name)
 		return (0);
@@ -79,9 +83,13 @@ size_t	get_var_len(const char *str, size_t i, t_var *vars, char **envp)
 	char	*var_name;
 	char	*var_value;
 
+	if (!str)
+		return (0);
 	var_len = 0;
-	while (isalnum(str[i + 1 + var_len]) || str[i + 1 + var_len] == '_')
+	while (str[i + 1 + var_len] && (isalnum(str[i + 1 + var_len]) || str[i + 1 + var_len] == '_'))
 		var_len++;
+	if (var_len == 0)
+		return (0);
 	var_name = ft_strndup(&str[i + 1], var_len);
 	if (!var_name)
 		return (0);
@@ -105,3 +113,4 @@ char	*expand_variables(const char *arg, char quote_type, t_shell *shell)
 	fill_expanded(expanded, arg, quote_type, shell);
 	return (expanded);
 }
+

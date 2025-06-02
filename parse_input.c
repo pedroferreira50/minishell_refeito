@@ -6,13 +6,11 @@ void	print_args(char **args)
 
 	if (args == NULL)
 	{
-		printf("No arguments to print.\n");
 		return ;
 	}
 	i = 0;
 	while (args[i] != NULL)
 	{
-		printf("Arg[%d]: %s\n", i, args[i]);
 		i++;
 	}
 }
@@ -66,7 +64,7 @@ static void	count_commands(char **args, int count, t_command_data *data,
 					ft_putstr_fd("minishell: syntax error near token\n", 2);
 					return ;
 				}
-				handle_heredoc(args, data, &idx, shell);
+				idx.i += 2;  // Skip heredoc operator and delimiter during counting
 			}
 			else
 			{
@@ -126,35 +124,6 @@ static void	alloc_commands(t_command_data *data, t_shell *shell)
 		i++;
 	}
 }
-// static void	populate_command(char **args, int *arg_counts, t_command_data *data, t_parse_state *state)
-// {
-// 	int i;
-// 	if (state->idx.j == 0)
-// 	{
-// 		if (data->input_file)
-// 		{
-// 			free(data->input_file);
-// 			data->input_file = NULL;
-// 		}
-// 		if (data->out_redirs)
-// 		{
-// 			i = 0;
-// 			while (i < data->num_out_redirs)
-// 			{
-// 				if (data->out_redirs[i].file)
-// 					free(data->out_redirs[i].file);
-// 				i++;
-// 			}
-// 			free(data->out_redirs);
-// 			data->out_redirs = NULL;
-// 		}
-// 		data->num_out_redirs = 0;
-// 		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
-// 		data->arguments[state->command_index] = malloc((arg_counts[state->command_index] + 1) * sizeof(char *));
-// 		if (data->commands[state->command_index] == NULL || data->arguments[state->command_index] == NULL)
-// 			return;
-// 	}
-// }
 static void	populate_command(char **args, int *arg_counts, t_command_data *data, t_parse_state *state)
 {
 	if (state->idx.j == 0)
@@ -169,6 +138,19 @@ static void	populate_command(char **args, int *arg_counts, t_command_data *data,
 
 static void	populate_argument(char **args, t_command_data *data, t_parse_state *state)
 {
+	if (state->idx.j == 0 && args[state->idx.i] && !*args[state->idx.i])
+	{
+		while (args[state->idx.i] && !*args[state->idx.i])
+			state->idx.i++;
+		
+		if (!args[state->idx.i])
+			return;
+		
+		if (data->commands[state->command_index])
+			free(data->commands[state->command_index]);
+		data->commands[state->command_index] = ft_strdup(args[state->idx.i]);
+	}
+	
 	data->arguments[state->command_index][state->idx.j] = ft_strdup(args[state->idx.i]);
 	if (data->arguments[state->command_index][state->idx.j] == NULL)
 		return ;

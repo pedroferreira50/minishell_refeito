@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:35:24 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:25:25 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/01 03:27:39 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,13 @@ static void	handle_braces(t_parse *state)
 
 void	process_token(t_parse *state, int *last_was_operator)
 {
+	int	had_quotes = 0;
+	
 	while (state->cmd[state->i] && (!ft_isspace(state->cmd[state->i]) \
 		|| state->in_quotes))
 	{
+		if ((state->cmd[state->i] == '\'' || state->cmd[state->i] == '"') && !state->in_quotes)
+			had_quotes = 1;
 		handle_quotes(state);
 		if (!state->in_quotes && (state->cmd[state->i] == '<' || \
 				state->cmd[state->i] == '>' || state->cmd[state->i] == '|'))
@@ -56,7 +60,8 @@ void	process_token(t_parse *state, int *last_was_operator)
 		else
 			state->i++;
 	}
-	if (state->i > state->start)
+	// Add argument if we have content OR if we had quotes (for empty quoted strings)
+	if (state->i > state->start || had_quotes)
 	{
 		add_argument(state);
 		*last_was_operator = 0;

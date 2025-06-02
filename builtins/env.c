@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:07 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 13:17:40 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/02 04:34:25 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	**copy_envp(char **envp)
 	return (new_envp);
 }
 
-static void	sort_env(char **env, int count)
+/* static void	sort_env(char **env, int count)
 {
 	char	*tmp;
 	int		i;
@@ -66,7 +66,7 @@ static void	sort_env(char **env, int count)
 			j++;
 		}
 	}
-}
+} */
 
 static void	print_env(char **env)
 {
@@ -77,21 +77,31 @@ static void	print_env(char **env)
 		printf("%s\n", env[i++]);
 }
 
-void	ft_env(char **envp, t_shell *shell)
+void	ft_env(char **args, t_shell *shell)
 {
 	char	**copy;
 	int		count;
 
+	// If arguments are provided, env should try to execute them
+	if (args && args[1])
+	{
+		ft_putstr_fd("env: '", 2);
+		ft_putstr_fd(args[1], 2);
+		ft_putstr_fd("': No such file or directory\n", 2);
+		shell->exit_status = 127;
+		return;
+	}
+
 	count = 0;
-	while (envp[count])
+	while (shell->envp[count])
 		count++;
-	copy = copy_envp(envp);
+	copy = copy_envp(shell->envp);
 	if (!copy)
 	{
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
-	sort_env(copy, count);
+	//sort_env(copy, count);
 	print_env(copy);
 	free_env_copy(copy);
 	shell->exit_status = 0;

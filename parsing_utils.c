@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 14:39:03 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 16:23:18 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:12:23 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ int	count_args(char **args)
 
 	count = 0;
 	while (args[count])
+	{
 		count++;
+	}
 	return (count);
 }
 
@@ -38,14 +40,11 @@ void	add_argument(t_parse *state)
 		return ;
 	}
 	state->args[state->args_count] = ft_strndup(&state->cmd[state->start], len);
-	if (state->args[state->args_count])
-	{
-		if (state->cmd[state->start] == '"' || state->cmd[state->start] == '\'')
-			state->quote_types[state->args_count] = state->cmd[state->start];
-		else
-			state->quote_types[state->args_count] = '\0';
-		state->quote_types[state->args_count + 1] = '\0';
-		state->args_count++;
-	}
+	if (state->cmd[state->start] == '"' || state->cmd[state->start] == '\'')
+		state->quote_types[state->args_count] = state->cmd[state->start];
+	else
+		state->quote_types[state->args_count] = '\0';
+	state->quote_types[state->args_count + 1] = '\0';
+	state->args_count++;
 	state->start = state->i;
 }

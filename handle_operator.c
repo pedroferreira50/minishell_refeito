@@ -62,7 +62,7 @@ void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
 					flags |= O_APPEND;
 				else
 					flags |= O_TRUNC;
-				fd = open(args[indices->i + 1], flags, 0644);
+				fd = open(args[indices->i + 1], flags, 0666);
 				if (fd < 0)
 				{
 					ft_putstr_fd("minishell: ", 2);
@@ -110,11 +110,17 @@ void	handle_heredoc(char **args, t_command_data *data, t_indices *indices,
 {
 	size_t	len;
 	char	*delim;
+	char	*clean_delim;
+	size_t	j;
+	size_t	i;
 
 	if (args[indices->i + 1] != NULL)
 	{
 		if (data->heredoc_delim)
+		{
 			free(data->heredoc_delim);
+			data->heredoc_delim = NULL;
+		}
 		delim = args[indices->i + 1];
 		len = ft_strlen(delim);
 		if (len >= 2 && (delim[0] == '"' || delim[0] == '\'')
@@ -122,6 +128,32 @@ void	handle_heredoc(char **args, t_command_data *data, t_indices *indices,
 		{
 			data->heredoc_delim = ft_strndup(delim + 1, len - 2);
 			data->heredoc_quoted = 1;
+		}
+		else if (ft_strchr(delim, '\'') || ft_strchr(delim, '"'))
+		{
+			clean_delim = malloc(len + 1);
+			j = 0;
+			i = 0;
+			if (clean_delim)
+			{
+				while (i < len)
+				{
+					if (delim[i] != '\'' && delim[i] != '"')
+					{
+						clean_delim[j] = delim[i];
+						j++;
+					}
+					i++;
+				}
+				clean_delim[j] = '\0';
+				data->heredoc_delim = clean_delim;
+				data->heredoc_quoted = 1;
+			}
+			else
+			{
+				data->heredoc_delim = ft_strdup(delim);
+				data->heredoc_quoted = 0;
+			}
 		}
 		else
 		{

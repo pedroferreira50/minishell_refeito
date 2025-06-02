@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:42 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 05:49:10 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:13:04 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	handle_output_redirection(t_command_data *data, int *i, int original_stdout,
 				flags = flags | O_APPEND;
 			else
 				flags = flags | O_TRUNC;
-			fd_out = open(data->out_redirs[*i][j].file, flags, 0644);
+			fd_out = open(data->out_redirs[*i][j].file, flags, 0666);
 			if (fd_out == -1)
 			{
 				ft_putstr_fd("minishell: ", 2);
@@ -78,12 +78,21 @@ int	handle_output_redirection(t_command_data *data, int *i, int original_stdout,
 
 int	execute_builtin_command(char *command, char **args, t_shell *shell, int *i)
 {
+	int	result;
+
 	if (ft_strcmp(command, "echo") == 0)
 		return (ft_echo(args, shell), 1);
 	if (ft_strcmp(command, "pwd") == 0)
-		return (ft_pwd(), 1);
+	{
+		result = ft_pwd();
+		if (result == 1)
+			shell->exit_status = 0;
+		else
+			shell->exit_status = 1;
+		return (1);
+	}
 	if (ft_strcmp(command, "env") == 0)
-		return (ft_env(shell->envp, shell), 1);
+		return (ft_env(args, shell), 1);
 	if (ft_strcmp(command, "cd") == 0)
 		return (ft_cd(args, i, shell), 1);
 	if (ft_strcmp(command, "export") == 0)

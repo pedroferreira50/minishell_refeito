@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:49:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:33:20 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:12:02 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,51 +98,51 @@ int	parent_builtin(t_command_data *data, t_exec_state *state, t_shell *shell)
 	return (0);
 }
 
-void	print_arguments(t_command_data *data)
+/* void	print_arguments(t_command_data *data)
 {
 	int	i;
 	int	j;
 	int	k;
 
-	printf("=== Parsed Commands ===\n");
+	// printf("=== Parsed Commands ===\n");
 	i = 0;
 	while (i < data->num_commands)
 	{
-		printf("Command %d:\n", i);
+		// printf("Command %d:\n", i);
 		if (data->arguments && data->arguments[i])
 		{
-			printf("  Arguments: ");
+			// printf("  Arguments: ");
 			j = 0;
 			while (data->arguments[i][j])
 			{
-				printf("'%s' ", data->arguments[i][j]);
+				// printf("'%s' ", data->arguments[i][j]);
 				j++;
 			}
-			printf("\n");
+			// printf("\n");
 		}
 		if (data->input_files && data->input_files[i])
-			printf("  Input File: %s\n", data->input_files[i]);
+			// printf("  Input File: %s\n", data->input_files[i]);
 		if (data->num_out_redirs && data->num_out_redirs[i] > 0)
 		{
-			printf("  Output Redirections: ");
+			// printf("  Output Redirections: ");
 			k = 0;
 			while (k < data->num_out_redirs[i])
 			{
 				if (data->out_redirs[i][k].append)
-					printf("'%s'%s ", data->out_redirs[i][k].file, "(append)");
+					// printf("'%s'%s ", data->out_redirs[i][k].file, "(append)");
 				else
-					printf("'%s'%s ", data->out_redirs[i][k].file, "");
+					// printf("'%s'%s ", data->out_redirs[i][k].file, "");
 				k++;
 			}
-			printf("\n");
+			// printf("\n");
 		}
-		printf("\n");
+		// printf("\n");
 		i++;
 	}
 	if (data->heredoc_delim)
-		printf("=== Heredoc Delimiter: %s ===\n", data->heredoc_delim);
-	printf("===========================\n\n");
-}
+		// printf("=== Heredoc Delimiter: %s ===\n", data->heredoc_delim);
+	// printf("===========================\n\n");
+} */
 
 void	execute_commands(t_command_data *data, t_shell *shell)
 {
@@ -161,14 +161,19 @@ void	execute_commands(t_command_data *data, t_shell *shell)
 	pids = init_execution(data, &state, shell);
 	if (pids == NULL)
 		return ;
+	set_signals_noninteractive();
 	while (state.i < data->num_commands)
 	{
 		run_pipeline(data, &state, shell, pids);
 		if (g_signal != 0)
 		{
 			handle_interrupt_signals(pids, &state, data);
+			shell->exit_status = 130;
+			g_signal = 0;
 			break ;
 		}
 	}
 	finalize_execution(&state, pids, data, shell);
+	g_signal = 0;
+	set_signals_interactive();
 }

@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:19:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 05:38:58 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/01 02:12:07 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,10 @@ void	free_command_data(t_command_data *data)
 		free(data->input_files);
 	}
 	if (data->heredoc_delim)
+	{
 		free(data->heredoc_delim);
+		data->heredoc_delim = NULL;
+	}
 	if (data->out_redirs && data->num_out_redirs)
 	{
 		i = 0;

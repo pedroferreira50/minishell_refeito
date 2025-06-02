@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 10:59:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 11:59:54 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/01 05:05:22 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,11 @@ void	fill_updated_envp(t_shell *shell, char **new_envp, char *new_entry,
 	int	i;
 	int	j;
 
+	if (!shell || !new_envp || !new_entry)
+		return ;
 	i = 0;
 	j = 0;
-	while (shell->envp[i])
+	while (shell->envp && shell->envp[i])
 	{
 		if (i == replace_index)
 			new_envp[j++] = ft_strdup(new_entry);

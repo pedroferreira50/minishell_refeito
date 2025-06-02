@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:05:58 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 18:03:07 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:05:36 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@ static int	is_numeric(const char *str)
 {
 	int	i;
 
+	if (!str || str[0] == '\0')
+		return (0);
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
+	if (str[i] == '\0')
+		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
@@ -47,7 +51,6 @@ void	ft_exit(char **args, t_shell *shell)
 {
 	int	exit_code;
 
-	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (args[1])
 	{
 		if (!is_numeric(args[1]))

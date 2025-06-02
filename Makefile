@@ -17,6 +17,7 @@ SRCS =  ./builtins/check_execute_builtins.c \
 		./builtins/exit.c \
 		./expand_vars/fill_expanded.c \
 		./expand_vars/var_expansion.c \
+		./expand_vars/mixed_quotes.c \
 		./parse_command/parse_command_utils.c \
 		./parse_command/parse_command.c \
 		./parse_command/process_token.c \

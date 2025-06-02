@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:45:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:28:43 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:04:32 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ char	*find_command_path(char *command, t_shell *shell)
 	char	**path_dirs;
 	char	*result;
 
+	if (!command || !*command)
+		return (NULL);
 	result = check_direct_executable(command);
 	if (result != NULL)
 		return (result);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/10 17:43:01 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/02 04:44:08 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,46 @@ int	print_exported_env(t_shell *shell)
 {
 	int		i;
 	char	*equal;
+	char	*var_name;
+	t_var	*var;
 
 	i = 0;
-	while (shell->envp[i])
+	while (shell->envp && shell->envp[i])
 	{
 		equal = ft_strchr(shell->envp[i], '=');
 		if (equal)
 		{
-			*equal = '\0';
-			ft_putstr_fd("declare -x ", STDOUT_FILENO);
-			ft_putstr_fd(shell->envp[i], STDOUT_FILENO);
-			ft_putstr_fd("=\"", STDOUT_FILENO);
-			ft_putstr_fd(equal + 1, STDOUT_FILENO);
-			ft_putstr_fd("\"\n", STDOUT_FILENO);
-			*equal = '=';
+			// Extract variable name (left of '=')
+			var_name = ft_substr(shell->envp[i], 0, equal - shell->envp[i]);
+			if (!var_name)
+				return (1); // Handle malloc failure if needed
+
+			// Skip printing if variable is "_"
+			if (strcmp(var_name, "_") != 0)
+			{
+				*equal = '\0';
+				ft_putstr_fd("declare -x ", STDOUT_FILENO);
+				ft_putstr_fd(shell->envp[i], STDOUT_FILENO);
+				ft_putstr_fd("=\"", STDOUT_FILENO);
+				ft_putstr_fd(equal + 1, STDOUT_FILENO);
+				ft_putstr_fd("\"\n", STDOUT_FILENO);
+				*equal = '=';
+			}
+			free(var_name); // Free allocated memory
 		}
 		i++;
+	}
+	// Rest of the function (unchanged)
+	var = shell->vars;
+	while (var)
+	{
+		if (var->exported && find_env_var_index(shell, var->name) == -1)
+		{
+			ft_putstr_fd("declare -x ", STDOUT_FILENO);
+			ft_putstr_fd(var->name, STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+		var = var->next;
 	}
 	return (0);
 }

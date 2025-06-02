@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:27:01 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:23:23 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 04:26:52 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int setup_output_redirect(t_command_data *data, int i, t_shell *shell)
 			else
 				flags |= O_TRUNC;
 
-			fd = open(data->out_redirs[i][j].file, flags, 0644);
+			fd = open(data->out_redirs[i][j].file, flags, 0666);
 			if (fd < 0)
 			{
 				shell->exit_status = 1;

@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:15:26 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/02 09:10:27 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	handle_assignment_non_export(char *input, t_parse_result *parsed)
 {
-	if (input != NULL)
-		free(input);
+	(void)input;
 	free_args(parsed->args, NULL);
 	free(parsed->quote_types);
 }
@@ -32,8 +31,6 @@ void	handle_command(char *input, t_shell *shell)
 	int				pre_parse_exit_status;
 
 	parsed = parse_command(input, shell);
-	if (ft_strchr(input, '=') && ft_strcmp(parsed.args[0], "export") != 0)
-		return (handle_assignment_non_export(input, &parsed), (void)0);
 	if (!parsed.args)
 		return ;
 	expanded_args = expand_tokens(parsed.args, parsed.quote_types, shell);
@@ -44,13 +41,8 @@ void	handle_command(char *input, t_shell *shell)
 		return ;
 	}
 	count = 0;
-	i = 0;
-	while (expanded_args[i])
-	{
-		if (expanded_args[i][0] != '\0')
-			count++;
-		i++;
-	}
+	while (expanded_args[count])
+		count++;
 	if (count == 0)
 	{
 		free_args(parsed.args, NULL);
@@ -66,12 +58,12 @@ void	handle_command(char *input, t_shell *shell)
 		free(parsed.quote_types);
 		return ;
 	}
-	j = 0;
 	i = 0;
+	j = 0;
 	while (expanded_args[i])
 	{
-		if (expanded_args[i][0] != '\0')
-			filtered_args[j++] = ft_strdup(expanded_args[i]);
+		filtered_args[j] = ft_strdup(expanded_args[i]);
+		j++;
 		i++;
 	}
 	filtered_args[j] = NULL;
@@ -111,23 +103,18 @@ void	handle_command(char *input, t_shell *shell)
 
 int	process_input(char *input, t_shell *shell)
 {
-	int i;
+	int	i;
 
 	if (g_signal == SIGINT)
 	{
 		shell->exit_status = 130;
 		g_signal = 0;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		return (1);
 	}
 	if (input == NULL)
 		return (0);
 	if (input[0] == '\0')
-	{
-		free(input);
 		return (1);
-	}
 	g_signal = 0;
 	i = 0;
 	while (input[i] && ft_isspace(input[i]))
@@ -140,6 +127,53 @@ int	process_input(char *input, t_shell *shell)
 	}
 	return (2);
 }
+
+/* int	main(int argc, char *argv[], char *envp[])
+{
+	t_shell	*shell;
+	char	*input;
+	char	*line;
+	int		result;
+
+	(void)argc;
+	(void)argv;
+	shell = get_shell();
+	init_shell(shell, envp);
+	rl_catch_signals = 0;
+	setup_signals();
+	while (1)
+	{
+		if (isatty(fileno(stdin)))
+			input = readline("minishell> ");
+		else
+		{
+			line = get_next_line(fileno(stdin));
+			if (!line)
+			{
+				input = NULL;
+			}
+			else
+			{
+				input = ft_strtrim(line, "\n");
+				free(line);
+			}
+		}
+		
+		result = process_input(input, shell);
+		if (result == 0)
+		{
+			break ;
+		}
+		if (input && input[0] != '\0' && result == 2)
+		{
+			handle_command(input, shell);
+		}
+		if (input)
+			free(input);
+	}
+	finalize_shell(shell);
+	return (shell->exit_status);
+} */
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -169,3 +203,4 @@ int	main(int argc, char *argv[], char *envp[])
 	finalize_shell(shell);
 	return (shell->exit_status);
 }
+
