@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:05:30 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 09:10:27 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 06:43:56 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,13 @@ void	handle_command(char *input, t_shell *shell)
 		free(data);
 		return ;
 	}
-	if (validate_command(data->commands, shell) == 0)
+	if (shell->exit_status != 2 && validate_command(data->commands, shell) == 0)
+	{
+		free_command_data(data);
+		free(data);
+		return ;
+	}
+	if (shell->exit_status == 2)
 	{
 		free_command_data(data);
 		free(data);
@@ -128,7 +134,7 @@ int	process_input(char *input, t_shell *shell)
 	return (2);
 }
 
-/* int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	t_shell	*shell;
 	char	*input;
@@ -173,9 +179,9 @@ int	process_input(char *input, t_shell *shell)
 	}
 	finalize_shell(shell);
 	return (shell->exit_status);
-} */
+}
 
-int	main(int argc, char *argv[], char *envp[])
+/* int	main(int argc, char *argv[], char *envp[])
 {
 	t_shell	*shell;
 	char	*input;
@@ -202,5 +208,5 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	finalize_shell(shell);
 	return (shell->exit_status);
-}
+} */
 

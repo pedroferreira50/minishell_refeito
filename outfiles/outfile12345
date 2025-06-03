@@ -1,4 +1,3 @@
->
 asd
 builtins
 echo
@@ -17,7 +16,6 @@ main_utils.c
 Makefile
 minishell
 minishell.h
-minishell_tester
 objs
 outfiles
 parse_command
@@ -30,7 +28,6 @@ readline.supp
 README.md
 signal.c
 test_results.log
-test_var_expansion.c
 tmp_err_bash
 tmp_err_minishell
 tmp_out_bash

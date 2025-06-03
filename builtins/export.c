@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:46 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 04:53:16 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:21:41 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,18 +77,12 @@ void	export_var_append(char *name, char *value, t_shell *shell)
 	
 	if (!name || !value || !shell)
 		return ;
-	
-	// Get existing value from environment or local variables
 	existing_value = get_var_value_helper(name, shell->vars, shell->envp);
 	if (!existing_value)
 		existing_value = "";
-	
-	// Concatenate existing value with new value
 	new_value = ft_strjoin(existing_value, value);
 	if (!new_value)
 		return ;
-	
-	// Export the concatenated value
 	export_var(name, new_value, shell);
 	free(new_value);
 }

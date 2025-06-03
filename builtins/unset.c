@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:08:13 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 02:28:01 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:21:20 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ int	ft_unset(char **args, t_var **vars, char ***envp)
 			i++;
 			continue;
 		}
-		// Check for invalid options (arguments starting with -)
 		if (args[i][0] == '-' && args[i][1] != '\0')
 		{
 			ft_putstr_fd("minishell: unset: -", 2);
@@ -112,7 +111,6 @@ int	ft_unset(char **args, t_var **vars, char ***envp)
 		}
 		if (!is_valid_var_name(args[i]))
 		{
-			// Bash silently ignores invalid variable names in unset
 			i++;
 			continue;
 		}

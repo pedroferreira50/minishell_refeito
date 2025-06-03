@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 04:44:08 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:22:39 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,9 @@ int	print_exported_env(t_shell *shell)
 		equal = ft_strchr(shell->envp[i], '=');
 		if (equal)
 		{
-			// Extract variable name (left of '=')
 			var_name = ft_substr(shell->envp[i], 0, equal - shell->envp[i]);
 			if (!var_name)
-				return (1); // Handle malloc failure if needed
-
-			// Skip printing if variable is "_"
+				return (1);
 			if (strcmp(var_name, "_") != 0)
 			{
 				*equal = '\0';
@@ -76,11 +73,10 @@ int	print_exported_env(t_shell *shell)
 				ft_putstr_fd("\"\n", STDOUT_FILENO);
 				*equal = '=';
 			}
-			free(var_name); // Free allocated memory
+			free(var_name);
 		}
 		i++;
 	}
-	// Rest of the function (unchanged)
 	var = shell->vars;
 	while (var)
 	{

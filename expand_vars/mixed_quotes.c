@@ -41,8 +41,6 @@ static t_quote_segment	*parse_quote_segments(const char *str, int *count)
 	*count = 0;
 	if (!str)
 		return (NULL);
-	
-	// First pass: count segments
 	i = 0;
 	seg_count = 0;
 	while (str[i])
@@ -65,8 +63,6 @@ static t_quote_segment	*parse_quote_segments(const char *str, int *count)
 	segments = malloc(sizeof(t_quote_segment) * seg_count);
 	if (!segments)
 		return (NULL);
-	
-	// Second pass: fill segments
 	i = 0;
 	*count = 0;
 	while (str[i])
@@ -99,18 +95,18 @@ static char	*expand_segment(t_quote_segment *segment, t_shell *shell)
 {
 	char	*expanded;
 	char	*content;
+	size_t	len;
+	char	*inner;
 
 	if (!segment || !segment->content)
 		return (ft_strdup(""));
 	
 	if (segment->quote_type == '\'')
 	{
-		// Single quotes: no expansion, remove quotes
 		content = segment->content;
 		if (content[0] == '\'' && content[ft_strlen(content) - 1] == '\'')
 		{
-			// Extract content between quotes without any expansion
-			size_t len = ft_strlen(content);
+			len = ft_strlen(content);
 			if (len <= 2)
 				return (ft_strdup(""));
 			return (ft_strndup(&content[1], len - 2));
@@ -120,11 +116,10 @@ static char	*expand_segment(t_quote_segment *segment, t_shell *shell)
 	}
 	else if (segment->quote_type == '"')
 	{
-		// Double quotes: expand variables, remove quotes
 		content = segment->content;
 		if (content[0] == '"' && content[ft_strlen(content) - 1] == '"')
 		{
-			char *inner = ft_strndup(&content[1], ft_strlen(content) - 2);
+			inner = ft_strndup(&content[1], ft_strlen(content) - 2);
 			expanded = expand_variables(inner, '"', shell);
 			free(inner);
 			return (expanded);
@@ -134,7 +129,6 @@ static char	*expand_segment(t_quote_segment *segment, t_shell *shell)
 	}
 	else
 	{
-		// No quotes: expand variables
 		return (expand_variables(segment->content, '\0', shell));
 	}
 }

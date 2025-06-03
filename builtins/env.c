@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:07:07 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 04:34:25 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:52:37 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,9 @@ void	ft_env(char **args, t_shell *shell)
 	char	**copy;
 	int		count;
 
-	// If arguments are provided, env should try to execute them
 	if (args && args[1])
 	{
-		ft_putstr_fd("env: '", 2);
-		ft_putstr_fd(args[1], 2);
-		ft_putstr_fd("': No such file or directory\n", 2);
-		shell->exit_status = 127;
+		print_error_command("env", "No such file or directory", 127, shell);
 		return;
 	}
 
@@ -101,7 +97,6 @@ void	ft_env(char **args, t_shell *shell)
 		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
-	//sort_env(copy, count);
 	print_env(copy);
 	free_env_copy(copy);
 	shell->exit_status = 0;

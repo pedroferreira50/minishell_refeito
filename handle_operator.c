@@ -18,7 +18,15 @@ void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
 	token = args[indices->i];
 	if (token == NULL || args[indices->i + 1] == NULL)
 	{
-		ft_putstr_fd("minishell: syntax error near redirect\n", 2);
+		print_error_simple("syntax error near unexpected token `newline'", 2, shell);
+		indices->i++;
+		return ;
+	}
+	if (is_operator(args[indices->i + 1]))
+	{
+		ft_putstr_fd("bash: syntax error near unexpected token `", 2);
+		ft_putstr_fd(args[indices->i + 1], 2);
+		ft_putstr_fd("'\n", 2);
 		shell->exit_status = 2;
 		indices->i++;
 		return ;
@@ -98,8 +106,7 @@ void	handle_redirect(char **args, t_command_data *data, t_indices *indices,
 	}
 	else
 	{
-		ft_putstr_fd("minishell: syntax error near redirect\n", 2);
-		shell->exit_status = 2;
+		print_error_simple("syntax error near redirect", 2, shell);
 		indices->i++;
 	}
 }
@@ -166,8 +173,7 @@ void	handle_heredoc(char **args, t_command_data *data, t_indices *indices,
 	}
 	else
 	{
-		ft_putstr_fd("minishell: syntax error: no delimiter after '<<'\n", 2);
-		shell->exit_status = 2;
+		print_error_simple("syntax error: no delimiter after '<<'", 2, shell);
 		indices->i++;
 	}
 }

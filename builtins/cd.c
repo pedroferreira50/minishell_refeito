@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:06:32 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 03:41:49 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:53:23 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,7 @@ static int	gotohome(char **path, t_shell *shell)
 	*path = get_env_value(shell->envp, "HOME");
 	if (*path == NULL)
 	{
-		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-		shell->exit_status = 1;
+		print_error_simple("cd: HOME not set", 1, shell);
 		return (1);
 	}
 	return (0);
@@ -78,8 +77,7 @@ static int	goto_oldpwd(char **path, t_shell *shell)
 	*path = get_env_value(shell->envp, "OLDPWD");
 	if (*path == NULL)
 	{
-		ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
-		shell->exit_status = 1;  // Bash returns 1 when OLDPWD not set
+		print_error_simple("cd: OLDPWD not set", 1, shell);
 		return (1);
 	}
 	printf("%s\n", *path);
@@ -88,18 +86,16 @@ static int	goto_oldpwd(char **path, t_shell *shell)
 
 static int	handle_cd_error(t_shell *shell, char *old_pwd, char *path)
 {
-	ft_putstr_fd("minishell: cd: ", 2);
-	ft_putstr_fd(path, 2);
+	print_error_command("cd", path, 1, shell);
 	ft_putstr_fd(": No such file or directory\n", 2);
-	shell->exit_status = 1;  // Bash returns 1 for invalid directories
+	shell->exit_status = 1;
 	free(old_pwd);
 	return (1);
 }
 
 static int	handle_cd_too_many_arguments(t_shell *shell)
 {
-	ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-	shell->exit_status = 1;  // Bash returns 1 for too many arguments
+	print_error_simple("cd: too many arguments", 1, shell);
 	return (1);
 }
 
@@ -132,8 +128,7 @@ int	ft_cd(char **args, int *i, t_shell *shell)
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
 	{
-		ft_putstr_fd("minishell: cd: getcwd failed\n", 2);
-		shell->exit_status = 1;
+		print_error_simple("cd: getcwd failed", 1, shell);
 		free(old_pwd);
 		return (1);
 	}

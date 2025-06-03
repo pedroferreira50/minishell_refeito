@@ -42,14 +42,20 @@ static void	count_commands(char **args, int count, t_command_data *data,
 			{
 				if (idx.j == 0)
 				{
-					shell->exit_status = 2;
-					ft_putstr_fd("minishell: syntax error: no command before pipe\n", 2);
-					return ;
+					if (idx.i == 0)
+					{
+						print_error_simple("syntax error: no command before pipe", 2, shell);
+						return ;
+					}
 				}
 				if (idx.i + 1 >= (size_t)count || args[idx.i + 1] == NULL)
 				{
-					shell->exit_status = 2;
-					ft_putstr_fd("minishell: syntax error near token\n", 2);
+					print_error_simple("syntax error near token", 2, shell);
+					return ;
+				}
+				if (idx.i + 1 < (size_t)count && is_operator(args[idx.i + 1]) && ft_strcmp(args[idx.i + 1], "|") == 0)
+				{
+					print_error_simple("syntax error near unexpected token", 2, shell);
 					return ;
 				}
 				handle_pipe(data, &command_index, shell);
@@ -60,22 +66,22 @@ static void	count_commands(char **args, int count, t_command_data *data,
 			{
 				if (idx.i + 1 >= (size_t)count || args[idx.i + 1] == NULL)
 				{
-					shell->exit_status = 2;
-					ft_putstr_fd("minishell: syntax error near token\n", 2);
+					print_error_simple("syntax error near token", 2, shell);
 					return ;
 				}
-				idx.i += 2;  // Skip heredoc operator and delimiter during counting
+				idx.i += 2;
 			}
 			else
 			{
 				if (idx.i + 1 >= (size_t)count || args[idx.i + 1] == NULL)
 				{
-					shell->exit_status = 2;
-					ft_putstr_fd("minishell: syntax error near token\n", 2);
+					print_error_simple("syntax error near token", 2, shell);
 					return ;
 				}
 				shell->is_counting = 1;
 				handle_redirect(args, data, &idx, shell, command_index);
+				if (shell->exit_status == 2)
+					return ;
 			}
 		}
 		else
@@ -88,8 +94,7 @@ static void	count_commands(char **args, int count, t_command_data *data,
 	data->num_commands = command_index + 1;
 	if (data->num_commands <= data->num_pipes)
 	{
-		shell->exit_status = 2;
-		ft_putstr_fd("minishell: invalid pipe sequence\n", 2);
+		print_error_simple("invalid pipe sequence", 2, shell);
 		data->num_commands = 0;
 	}
 }
@@ -176,6 +181,8 @@ static void	handle_operator_wrapper(char **args, t_command_data *data,
 	{
 		shell->is_counting = 0;
 		handle_redirect(args, data, &state->idx, shell, state->command_index);
+		if (shell->exit_status == 2)
+			return ;
 	}
 }
 static void	populate_commands(char **args, int *arg_counts,

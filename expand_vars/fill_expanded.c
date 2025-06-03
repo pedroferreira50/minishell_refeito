@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:44:40 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/01 05:13:07 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:27:33 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	calc_expanded_size(const char *arg, char quote_type, t_shell *shell)
 {
 	size_t		size;
 	t_indices	indices;
+	size_t		start;
+	size_t		end;
 
 	if (!arg || !shell)
 		return (1);
@@ -28,42 +30,38 @@ size_t	calc_expanded_size(const char *arg, char quote_type, t_shell *shell)
 	{
 		if (arg[indices.i] == '\\' && arg[indices.i + 1])
 		{
-			// Handle escaped characters
 			if (arg[indices.i + 1] == '$')
 			{
-				size++; // Just the $ character
-				indices.i += 2; // Skip both \ and $
+				size++;
+				indices.i += 2;
 			}
 			else if (arg[indices.i + 1] == '\\')
 			{
-				size++; // One backslash for each pair
-				indices.i += 2; // Skip both backslashes
+				size++;
+				indices.i += 2;
 			}
 			else
 			{
-				size += 2; // Keep both \ and the next character
+				size += 2;
 				indices.i += 2;
 			}
 			continue;
 		}
 		if (arg[indices.i] == '$')
 		{
-			// Check for $"..." syntax - should not expand variables inside
 			if (arg[indices.i + 1] == '"')
 			{
-				// Find the closing quote and count the literal content
-				size_t start = indices.i + 2;
-				size_t end = start;
+				start = indices.i + 2;
+				end = start;
 				while (arg[end] && arg[end] != '"')
 					end++;
 				if (arg[end] == '"')
 				{
-					size += (end - start); // Just the content inside quotes
+					size += (end - start);
 					indices.i = end + 1;
 				}
 				else
 				{
-					// No closing quote, treat as regular $
 					size += calc_var_size(arg, &indices, shell);
 				}
 			}
@@ -140,6 +138,8 @@ static void	fill_var_name(char *dest, const char *src, t_indices *indices,
 void	fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell)
 {
 	t_indices	indices;
+	size_t		start;
+	size_t		end;
 
 	indices.i = 0;
 	indices.j = 0;
@@ -151,46 +151,38 @@ void	fill_expanded(char *dest, const char *src, char quote_type, t_shell *shell)
 	{
 		if (src[indices.i] == '\\' && src[indices.i + 1])
 		{
-			// Handle escaped characters
 			if (src[indices.i + 1] == '$')
 			{
-				// Escaped $: output literal $
 				dest[indices.j++] = '$';
-				indices.i += 2; // Skip both \ and $
+				indices.i += 2;
 			}
 			else if (src[indices.i + 1] == '\\')
 			{
-				// Escaped backslash: output one backslash
 				dest[indices.j++] = '\\';
-				indices.i += 2; // Skip both backslashes
+				indices.i += 2;
 			}
 			else
 			{
-				// Other escaped characters: keep both \ and the character
 				dest[indices.j++] = src[indices.i++];
 				dest[indices.j++] = src[indices.i++];
 			}
 		}
 		else if (src[indices.i] == '$')
 		{
-			// Check for $"..." syntax
 			if (src[indices.i + 1] == '"')
 			{
-				// Find the closing quote and copy literal content
-				size_t start = indices.i + 2;
-				size_t end = start;
+				start = indices.i + 2;
+				end = start;
 				while (src[end] && src[end] != '"')
 					end++;
 				if (src[end] == '"')
 				{
-					// Copy the content inside quotes literally
 					while (start < end)
 						dest[indices.j++] = src[start++];
 					indices.i = end + 1;
 				}
 				else
 				{
-					// No closing quote, treat as regular $
 					if (src[indices.i + 1] == '?')
 						fill_exit_status(dest, &indices, shell);
 					else if (ft_isalpha(src[indices.i + 1]) || src[indices.i + 1] == '_')

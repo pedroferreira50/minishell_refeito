@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 16:45:50 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 09:04:32 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:18:37 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static char	*check_direct_executable(char *command)
 	}
 	return (result);
 }
+
 
 static int	search_in_path_error(t_shell *shell)
 {
@@ -84,23 +85,22 @@ char	*find_command_path(char *command, t_shell *shell)
 
 	if (!command || !*command)
 		return (NULL);
-	result = check_direct_executable(command);
-	if (result != NULL)
-		return (result);
+	if (ft_strchr(command, '/'))
+		return (check_direct_executable(command));
 	path = get_path_from_env(shell);
-	if (path == NULL)
-		return (NULL);
-	path_dirs = ft_split(path, ':');
-	if (path_dirs == NULL)
+	if (path != NULL)
 	{
-		ft_putstr_fd("Error: ft_split failed\n", STDERR_FILENO);
-		shell->exit_status = 1;
-		return (NULL);
+		path_dirs = ft_split(path, ':');
+		if (path_dirs == NULL)
+		{
+			ft_putstr_fd("Error: ft_split failed\n", STDERR_FILENO);
+			shell->exit_status = 1;
+			return (NULL);
+		}
+		result = search_in_path(command, path_dirs, shell);
+		free_args(path_dirs, NULL);
+		if (result != NULL)
+			return (result);
 	}
-	result = search_in_path(command, path_dirs, shell);
-	free_args(path_dirs, NULL);
-	if (result != NULL)
-		return (result);
-	result = check_direct_executable(command);
-	return (result);
+	return (check_direct_executable(command));
 }

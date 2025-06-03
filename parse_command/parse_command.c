@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:42:33 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/30 07:25:16 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:58:48 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static int	check_paren(t_parse *state, t_shell *shell, t_parse_result *result)
 	if ((state->cmd[state->i] == '(' || state->cmd[state->i] == ')') && \
 			!state->in_quotes)
 	{
-		error_paren(shell);
+		print_error_simple("syntax error near token", 2, shell);
 		free(state->args);
 		free(state->quote_types);
 		result->args = NULL;
@@ -86,7 +86,7 @@ static int	check_initial(const char *cmd, t_shell *shell, t_parse *state)
 	}
 	if (cmd && cmd[0] == '|')
 	{
-		error_pipe(shell);
+		print_error_token("|", 2, shell);
 		return (0);
 	}
 	return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_command_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scarlos- <scarlos-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:36:00 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/05/03 15:05:08 by scarlos-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:58:30 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ int	check_errors(t_parse *state, t_shell *shell, int last_was_operator)
 {
 	if (state->in_quotes)
 	{
-		error_quotes(shell);
+		print_error_simple("syntax error: unclosed quotes", 2, shell);
 		return (0);
 	}
 	if (last_was_operator)
 	{
-		error_newline(shell);
+		print_error_token("newline", 2, shell);
 		return (0);
 	}
 	return (1);

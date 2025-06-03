@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:03:27 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 05:29:27 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:51:00 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	handle_wait_status(int status, t_shell *shell)
 			if (shell->exit_status == 130)
 				ft_putstr_fd("\n", 2);
 			if (shell->exit_status == 139)
-				ft_putstr_fd("minishell: segmentation fault\n", 2);
+				print_error_simple("segmentation fault", 139, shell);
 		}
 	}
 }

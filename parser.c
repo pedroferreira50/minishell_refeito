@@ -196,27 +196,18 @@ int	validate_command(char **args, t_shell *shell)
 		{
 			if (S_ISDIR(st.st_mode))
 			{
-				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(args[0], 2);
-				ft_putstr_fd(": Is a directory\n", 2);
-				shell->exit_status = 126;
+				print_error_command(args[0], "Is a directory", 126, shell);
 				return (0);
 			}
 			if (S_ISREG(st.st_mode) && access(args[0], X_OK) != 0)
 			{
-				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(args[0], 2);
-				ft_putstr_fd(": Permission denied\n", 2);
-				shell->exit_status = 126;
+				print_error_command(args[0], "Permission denied", 126, shell);
 				return (0);
 			}
 		}
 		else
 		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(args[0], 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			shell->exit_status = 127;
+			print_error_command(args[0], "No such file or directory", 127, shell);
 			return (0);
 		}
 	}
@@ -254,7 +245,8 @@ void	expand_and_validate(char **tokens, char *quote_types, t_shell *shell)
 
 	if (!tokens || !tokens[0])
 	{
-		shell->exit_status = 0;
+		if (shell->exit_status != 2)
+			shell->exit_status = 0;
 		return ;
 	}
 	expanded = expand_tokens(tokens, quote_types, shell);

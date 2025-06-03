@@ -6,7 +6,7 @@
 /*   By: pviegas- <pviegas-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:31:59 by scarlos-          #+#    #+#             */
-/*   Updated: 2025/06/02 08:26:58 by pviegas-         ###   ########.fr       */
+/*   Updated: 2025/06/03 07:58:05 by pviegas-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,11 +148,17 @@ void			add_argument(t_parse *state);
 char			*ft_strndup(const char *src, size_t n);
 
 //error.c
-void			error_newline(t_shell *shell);
-void			error_quotes(t_shell *shell);
 void			error_operator(char op, t_shell *shell);
-void			error_paren(t_shell *shell);
-void			error_pipe(t_shell *shell);
+// Enhanced error handling utility functions
+void			print_error_simple(const char *message, int exit_code,
+					t_shell *shell);
+void			print_error_command(const char *command, const char *message,
+					int exit_code, t_shell *shell);
+void			print_error_token(const char *token, int exit_code,
+					t_shell *shell);
+void			print_error_and_exit(const char *command, const char *message,
+					int exit_code, t_shell *shell, t_command_data *data,
+					pid_t *pids);
 
 void			initialize_state(t_parse *state, const char *cmd);
 int				check_errors(t_parse *state, t_shell *shell,
